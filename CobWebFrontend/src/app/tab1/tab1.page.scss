@@ -1,0 +1,44 @@
+ion-content {
+  --background: transparent;
+}
+
+/* Own stacking/positioning context — ion-content's shadow scroller is not a
+   reliable containing block for the absolutely positioned map. */
+.map-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Floats above the map without swallowing pans outside the filter card. */
+.map-page__overlay {
+  position: absolute;
+  z-index: 400;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 8px 12px;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.map-page__summary {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 82%);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 6px 18px rgb(15 23 42 / 16%);
+  font-size: 0.78rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .map-page__summary {
+    background: rgb(28 30 38 / 85%);
+    box-shadow: 0 6px 18px rgb(0 0 0 / 45%);
+  }
+}

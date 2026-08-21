@@ -1,0 +1,102 @@
+app-map-view {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.map-view__canvas {
+  width: 100%;
+  height: 100%;
+  background: var(--ion-color-step-50, #f2f3f8);
+}
+
+/* Leaflet renders pins and popups outside the compiled template, so everything
+   below is intentionally global (see ViewEncapsulation.None on the component). */
+
+.map-pin__dot {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #4f7cff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 35%);
+}
+
+.map-pin--place .map-pin__dot {
+  background: #ff5c7a;
+}
+
+.map-pin__pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: rgb(79 124 255 / 35%);
+  animation: map-pin-pulse 2s ease-out infinite;
+}
+
+@keyframes map-pin-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pin__pulse {
+    animation: none;
+  }
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 18%);
+}
+
+.leaflet-popup-content {
+  margin: 12px 16px;
+}
+
+.map-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.map-popup__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.map-popup__region {
+  font-size: 0.75rem;
+  opacity: 0.65;
+}
+
+.map-popup__distance {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4f7cff;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+}
+
+.leaflet-control-zoom a {
+  border: none !important;
+  font-weight: 400;
+}
+
+.leaflet-control-attribution {
+  border-radius: 8px 0 0;
+  font-size: 0.65rem;
+}

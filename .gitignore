@@ -427,3 +427,25 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# --- Angular / Ionic ---
+dist/
+tmp/
+out-tsc/
+.angular/
+www/
+.env
+.env.local
+
+# Ionic / Capacitor
+.sourcemaps/
+.ionic/
+.capacitor/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db

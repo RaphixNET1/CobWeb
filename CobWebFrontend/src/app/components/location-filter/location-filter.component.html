@@ -1,0 +1,61 @@
+<div class="filter">
+  <div class="filter__search">
+    <ion-searchbar
+      mode="ios"
+      placeholder="Search location …"
+      inputmode="search"
+      [debounce]="0"
+      (ionInput)="onSearchInput($event)"
+      (ionClear)="clear()"
+    ></ion-searchbar>
+
+    @if (searching()) {
+      <ion-spinner class="filter__spinner" name="crescent"></ion-spinner>
+    }
+  </div>
+
+  @if (suggestions().length) {
+    <ul class="filter__results">
+      @for (place of suggestions(); track place.id) {
+        <li>
+          <button type="button" class="filter__result" (click)="select(place)">
+            <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+            <span class="filter__result-text">
+              <span class="filter__result-name">{{ place.name }}</span>
+              @if (place.region) {
+                <span class="filter__result-region">{{ place.region }}</span>
+              }
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="filter__radius">
+    <div class="filter__radius-head">
+      <span class="filter__label">
+        <ion-icon name="navigate-outline" aria-hidden="true"></ion-icon>
+        Radius
+      </span>
+      <span class="filter__value">{{ radiusKm() }} km</span>
+    </div>
+
+    <ion-range
+      mode="ios"
+      aria-label="Searchradius in kilometers"
+      [min]="0"
+      [max]="maxRadiusKm()"
+      [step]="1"
+      [value]="radiusKm()"
+      (ionInput)="onRadiusInput($event)"
+    ></ion-range>
+  </div>
+
+  @if (selectedName(); as name) {
+    <button type="button" class="filter__chip" (click)="clear()">
+      <span class="filter__chip-text">{{ name }} · {{ radiusKm() }} km</span>
+      <ion-icon name="close-circle" aria-hidden="true"></ion-icon>
+    </button>
+  }
+</div>
