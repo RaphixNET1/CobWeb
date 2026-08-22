@@ -5,7 +5,10 @@ export interface Place {
   name: string;
   /** Everything after the name, e.g. "Bayern, Deutschland". */
   region: string;
+
+  // Latitude
   lat: number;
+  // Longitude
   lon: number;
   /** Filled in once the place has been measured against a search center. */
   distanceKm?: number;

@@ -3,7 +3,6 @@ import {IonButtons, IonContent, IonHeader, IonTitle, IonToolbar} from '@ionic/an
 
 import { LocationFilterComponent } from '../components/location-filter/location-filter.component';
 import { MapViewComponent } from '../components/map-view/map-view.component';
-import { DEMO_PLACES } from '../models/demo-places';
 import { Place, distanceInKm } from '../models/place.model';
 
 const DEFAULT_RADIUS_KM = 25;
@@ -22,8 +21,7 @@ export class Tab1Page {
   readonly center = signal<Place | null>(null);
   readonly radiusKm = signal(DEFAULT_RADIUS_KM);
 
-  /** Demo pins inside the circle, nearest first. */
-  readonly placesInRadius = computed<Place[]>(() => {
+  /*readonly placesInRadius = computed<Place[]>(() => {
     const center = this.center();
     if (!center) {
       return [];
@@ -31,8 +29,5 @@ export class Tab1Page {
 
     const radiusKm = this.radiusKm();
 
-    return DEMO_PLACES.map((place) => ({ ...place, distanceKm: distanceInKm(center, place) }))
-      .filter((place) => place.id !== center.id && place.distanceKm <= radiusKm)
-      .sort((a, b) => a.distanceKm - b.distanceKm);
-  });
+  });*/
 }

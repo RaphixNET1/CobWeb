@@ -12,7 +12,7 @@
 
 <ion-content [fullscreen]="true" [scrollY]="false">
   <div class="map-page">
-    <app-map-view [center]="center()" [radiusKm]="radiusKm()" [places]="placesInRadius()" />
+    <app-map-view [center]="center()" [radiusKm]="radiusKm()" />
 
     <div class="map-page__overlay">
       <app-location-filter
@@ -22,13 +22,15 @@
         (radiusChanged)="radiusKm.set($event)"
       />
 
+     <!--
+
       @if (center(); as place) {
         <p class="map-page__summary">
           <strong>{{ placesInRadius().length }}</strong>
           {{ placesInRadius().length === 1 ? 'Location' : 'Locations' }} within a radius of
           {{ radiusKm() }} km around {{ place.name }}
         </p>
-      }
+      }-->
     </div>
   </div>
 </ion-content>

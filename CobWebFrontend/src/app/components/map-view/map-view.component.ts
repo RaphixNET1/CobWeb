@@ -14,8 +14,8 @@ import * as L from 'leaflet';
 
 import { Place } from '../../models/place.model';
 
-const GERMANY_OVERVIEW: L.LatLngTuple = [51.1657, 10.4515];
-const OVERVIEW_ZOOM = 6;
+const GERMANY_OVERVIEW: L.LatLngTuple = [47.6965, 13.3457];
+const OVERVIEW_ZOOM = 7;
 
 /** Leaflet builds these nodes itself, so they carry no Angular encapsulation attribute. */
 const CENTER_ICON = L.divIcon({
