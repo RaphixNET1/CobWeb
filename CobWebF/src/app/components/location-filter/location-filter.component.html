@@ -1,0 +1,64 @@
+<div class="filter">
+  <div class="filter__search">
+    <input
+      #search
+      type="search"
+      class="filter__input"
+      placeholder="Search location …"
+      inputmode="search"
+      (input)="onSearchInput($event)"
+    />
+
+    @if (searching()) {
+      <span class="filter__spinner" aria-hidden="true"></span>
+    } @else if (search.value) {
+      <button type="button" class="filter__clear" (click)="search.value = ''; clear()">✕</button>
+    }
+  </div>
+
+  @if (suggestions().length) {
+    <ul class="filter__results">
+      @for (place of suggestions(); track place.id) {
+        <li>
+          <button type="button" class="filter__result" (click)="select(place)">
+            <lucide-icon [img]="MapPin" [size]="18" aria-hidden="true" />
+            <span class="filter__result-text">
+              <span class="filter__result-name">{{ place.name }}</span>
+              @if (place.region) {
+                <span class="filter__result-region">{{ place.region }}</span>
+              }
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="filter__radius">
+    <div class="filter__radius-head">
+      <span class="filter__label">
+        <lucide-icon [img]="Navigation" [size]="16" aria-hidden="true" />
+        Radius
+      </span>
+      <span class="filter__value">{{ radiusKm() }} km</span>
+    </div>
+
+    <input
+      type="range"
+      class="filter__range"
+      aria-label="Searchradius in kilometers"
+      min="1"
+      [max]="maxRadiusKm()"
+      step="1"
+      [value]="radiusKm()"
+      (input)="onRadiusInput($event)"
+    />
+  </div>
+
+  @if (selectedName(); as name) {
+    <button type="button" class="filter__chip" (click)="search.value = ''; clear()">
+      <span class="filter__chip-text">{{ name }} · {{ radiusKm() }} km</span>
+      <lucide-icon [img]="XCircle" [size]="16" aria-hidden="true" />
+    </button>
+  }
+</div>

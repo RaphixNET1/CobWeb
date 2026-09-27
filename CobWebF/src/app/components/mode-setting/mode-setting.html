@@ -1,0 +1,9 @@
+<button
+  class="switch"
+  [class.on]="isDark()"
+  (click)="toggle()"
+  role="switch"
+  [attr.aria-checked]="isDark()"
+  aria-label="Dark Mode umschalten">
+  <span class="knob">{{ isDark() ? '🌙' : '☀️' }}</span>
+</button>
