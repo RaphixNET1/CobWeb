@@ -1,0 +1,29 @@
+<header class="header">
+  <h1 class="header__title heading">{{ pageTitle() }}</h1>
+
+  <div class="header__actions">
+    <span class="status"><span class="status__dot"></span> API online</span>
+    <app-mode-setting></app-mode-setting>
+    <img ngSrc="/assets/icon/CobWebLogoTransparentv2.png" alt="CobWeb" class="header__logo" height="200" width="500" />
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar">
+    <a routerLink="/map" routerLinkActive="active">
+      <lucide-icon [img]="MapIcon" [size]="20" /> Map
+    </a>
+    <a routerLink="/saved" routerLinkActive="active">
+      <lucide-icon [img]="Bookmark" [size]="20" /> Saved
+    </a>
+    <a routerLink="/about" routerLinkActive="active">
+      <lucide-icon [img]="User" [size]="20" /> About me
+    </a>
+  </nav>
+
+  <main class="page">
+    <router-outlet />
+  </main>
+</div>
+
+

@@ -22,7 +22,6 @@ interface NominatimResult {
 export class GeocodingService {
   private readonly http = inject(HttpClient);
 
-  /** Looks up places by free-text query. Emits an empty list for short queries. */
   search(query: string, limit = 6): Observable<Place[]> {
     const term = query.trim();
     if (term.length < MIN_QUERY_LENGTH) {

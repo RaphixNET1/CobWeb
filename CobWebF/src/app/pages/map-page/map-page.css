@@ -1,0 +1,16 @@
+:host { display: flex; flex-direction: column; height: 100%; }
+
+.content { flex: 1; min-height: 0; padding: 16px; }
+
+.map-page {
+  position: relative;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  isolation: isolate;
+}
+
+app-map-view { display: block; height: 100%; }
+
+.map-page__overlay { position: absolute; top: 16px; left: 16px; z-index: 1000; }

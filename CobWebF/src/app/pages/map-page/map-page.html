@@ -1,0 +1,14 @@
+<main class="content">
+  <div class="map-page">
+    <app-map-view [center]="center()" [radiusKm]="radiusKm()" />
+
+    <div class="map-page__overlay">
+      <app-location-filter
+        [radiusKm]="radiusKm()"
+        [maxRadiusKm]="maxRadiusKm"
+        (placeSelected)="center.set($event)"
+        (radiusChanged)="radiusKm.set($event)"
+      />
+    </div>
+  </div>
+</main>

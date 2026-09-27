@@ -176,7 +176,7 @@ function buildPopup(place: Place): HTMLElement {
   if (place.distanceKm !== undefined) {
     const distance = document.createElement('span');
     distance.className = 'map-popup__distance';
-    distance.textContent = `${place.distanceKm.toFixed(1)} km entfernt`;
+    distance.textContent = `${place.distanceKm.toFixed(1)} km away`;
     wrapper.append(distance);
   }
 

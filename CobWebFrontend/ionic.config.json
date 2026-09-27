@@ -1,7 +1,0 @@
-{
-  "name": "CobWebFrontend",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}
