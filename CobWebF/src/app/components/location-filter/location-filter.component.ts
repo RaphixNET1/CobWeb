@@ -19,7 +19,7 @@ const SEARCH_DEBOUNCE_MS = 350;
 @Component({
   selector: 'app-location-filter',
   templateUrl: './location-filter.component.html',
-  styleUrls: ['./location-filter.component.scss'],
+  styleUrls: ['./location-filter.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LucideAngularModule],
 })
@@ -30,8 +30,8 @@ export class LocationFilterComponent {
   protected readonly Navigation = Navigation;
   protected readonly XCircle = XCircle;
 
-  readonly radiusKm = input(50);
-  readonly maxRadiusKm = input(100);
+  readonly radiusKm = input(5);
+  readonly maxRadiusKm = input(25);
 
   readonly placeSelected = output<Place | null>();
   readonly radiusChanged = output<number>();
