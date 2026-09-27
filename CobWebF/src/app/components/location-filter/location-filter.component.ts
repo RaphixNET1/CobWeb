@@ -57,8 +57,15 @@ export class LocationFilterComponent {
   readonly suggestions = computed(() => (this.listOpen() ? this.results() : []));
 
   onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    if (!value.trim()) {
+      this.clear();
+    }
+  }
+
+  onSearchSubmit(value: string): void {
     this.listOpen.set(true);
-    this.query.set((event.target as HTMLInputElement).value);
+    this.query.set(value);
   }
 
   select(place: Place): void {

@@ -4,9 +4,10 @@
       #search
       type="search"
       class="filter__input"
-      placeholder="Search location …"
+      placeholder="Search location … (Enter)"
       inputmode="search"
       (input)="onSearchInput($event)"
+      (keydown.enter)="onSearchSubmit(search.value)"
     />
 
     @if (searching()) {
