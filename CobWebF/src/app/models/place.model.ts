@@ -1,22 +1,20 @@
-/** A geocoded location shown on the map. */
 export interface Place {
   id: string;
-  /** Short label, e.g. "Regensburg". */
+  // Short label, e.g. "Regensburg".
   name: string;
-  /** Everything after the name, e.g. "Bayern, Deutschland". */
+  // Everything after the name, e.g. "Bayern, Deutschland".
   region: string;
 
   // Latitude
   lat: number;
   // Longitude
   lon: number;
-  /** Filled in once the place has been measured against a search center. */
+  // Filled in once the place has been measured against a search center.
   distanceKm?: number;
 }
 
 const EARTH_RADIUS_KM = 6371;
 
-/** Great-circle distance between two places in kilometres (haversine). */
 export function distanceInKm(a: Place, b: Place): number {
   const dLat = toRadians(b.lat - a.lat);
   const dLon = toRadians(b.lon - a.lon);

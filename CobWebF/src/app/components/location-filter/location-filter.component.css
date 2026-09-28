@@ -165,6 +165,32 @@
   cursor: pointer;
   animation: filter-reveal 160ms ease-out;
 }
+.filter__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.filter__search-btn {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.filter__search-btn:hover {
+  filter: brightness(1.1);
+}
+
+.filter__search-btn:active {
+  transform: scale(0.97);
+}
 
 .filter__chip-text {
   overflow: hidden;

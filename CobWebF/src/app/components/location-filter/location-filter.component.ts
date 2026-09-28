@@ -30,8 +30,8 @@ export class LocationFilterComponent {
   protected readonly Navigation = Navigation;
   protected readonly XCircle = XCircle;
 
-  readonly radiusKm = input(5);
-  readonly maxRadiusKm = input(25);
+  readonly radiusKm = input(1);
+  readonly maxRadiusKm = input(5);
 
   readonly placeSelected = output<Place | null>();
   readonly radiusChanged = output<number>();

@@ -4,10 +4,8 @@ import { Observable, map, of } from 'rxjs';
 
 import { Place } from '../models/place.model';
 
-/** Free, key-less geocoder from the OpenStreetMap project. */
 const NOMINATIM_SEARCH_URL = 'https://nominatim.openstreetmap.org/search';
 
-/** Nominatim ignores anything shorter and we would just burn requests. */
 const MIN_QUERY_LENGTH = 3;
 
 interface NominatimResult {

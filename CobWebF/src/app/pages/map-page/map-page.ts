@@ -5,8 +5,8 @@ import { MapViewComponent } from '../../components/map-view/map-view.component';
 import { Place } from '../../models/place.model';
 import {NgOptimizedImage} from '@angular/common';
 
-const DEFAULT_RADIUS_KM = 25;
-const MAX_RADIUS_KM = 100;
+const DEFAULT_RADIUS_KM = 1;
+const MAX_RADIUS_KM = 5;
 
 @Component({
   selector: 'app-map-page',
