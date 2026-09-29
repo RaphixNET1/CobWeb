@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
-import { LucideAngularModule, MapPin, Navigation, XCircle } from "lucide-angular";
+import { LucideAngularModule, MapPin, Navigation, Search, XCircle } from "lucide-angular";
 
 import { Place } from '../../models/place.model';
 import { GeocodingService } from '../../services/geocoding.service';
@@ -29,12 +29,15 @@ export class LocationFilterComponent {
   protected readonly MapPin = MapPin;
   protected readonly Navigation = Navigation;
   protected readonly XCircle = XCircle;
+  protected readonly Search = Search;
 
   readonly radiusKm = input(1);
   readonly maxRadiusKm = input(5);
+  readonly loading = input(false);
 
   readonly placeSelected = output<Place | null>();
   readonly radiusChanged = output<number>();
+  readonly searchRequested = output<void>();
 
   readonly selectedName = signal<string | null>(null);
   readonly searching = signal(false);

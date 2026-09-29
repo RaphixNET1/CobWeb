@@ -1,14 +1,37 @@
 <main class="content">
   <div class="map-page">
-    <app-map-view [center]="center()" [radiusKm]="radiusKm()" />
+    <app-map-view
+      [center]="center()"
+      [radiusKm]="radiusKm()"
+      [businesses]="businesses()"
+      [selectedBusinessId]="selectedBusinessId()"
+      (businessSelected)="selectBusiness($event)"
+    />
 
     <div class="map-page__overlay">
       <app-location-filter
         [radiusKm]="radiusKm()"
         [maxRadiusKm]="maxRadiusKm"
-        (placeSelected)="center.set($event)"
-        (radiusChanged)="radiusKm.set($event)"
+        [loading]="status() === 'loading'"
+        (placeSelected)="onPlaceSelected($event)"
+        (radiusChanged)="onRadiusChanged($event)"
+        (searchRequested)="search()"
       />
     </div>
+
+    @if (status() !== 'idle') {
+      <div class="map-page__results">
+        <app-business-results
+          [businesses]="businesses()"
+          [status]="status()"
+          [selectedId]="selectedBusinessId()"
+          [placeName]="searchedPlace()?.name ?? ''"
+          [radiusKm]="searchedRadiusKm()"
+          (businessSelected)="selectBusiness($event)"
+          (retry)="search()"
+          (closed)="resetResults()"
+        />
+      </div>
+    }
   </div>
 </main>

@@ -23,6 +23,28 @@ app-map-view {
   background: #7a0c1c;
 }
 
+.map-pin--business .map-pin__dot {
+  transition: transform 0.15s, background 0.15s;
+}
+
+.map-pin--no-website .map-pin__dot {
+  background: #7a0c1c;
+}
+
+.map-pin--social-only .map-pin__dot {
+  background: #ff4d4d;
+}
+
+.map-pin--business:hover .map-pin__dot {
+  transform: scale(1.25);
+}
+
+.map-pin--business.is-active .map-pin__dot {
+  background: #ff4d4d;
+  transform: scale(1.5);
+  box-shadow: 0 0 0 4px rgb(200 16 46 / 25%), 0 2px 8px rgb(0 0 0 / 35%);
+}
+
 .map-pin__pulse {
   position: absolute;
   inset: -6px;
@@ -78,6 +100,44 @@ app-map-view {
 .map-popup__region {
   font-size: 0.75rem;
   opacity: 0.65;
+}
+
+.map-popup__category {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.map-popup__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.map-popup__badge {
+  padding: 1px 8px;
+  border: 1px solid var(--input-border);
+  border-radius: 999px;
+  background: var(--active-bg);
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.map-popup__link {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.map-popup__link:hover {
+  text-decoration: underline;
 }
 
 .map-popup__distance {

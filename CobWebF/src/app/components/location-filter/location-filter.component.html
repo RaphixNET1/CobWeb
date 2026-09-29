@@ -62,8 +62,17 @@
       <lucide-icon [img]="XCircle" [size]="16" aria-hidden="true" />
     </button>
 
-    <button type="button" class="filter__search-btn">
-      Search
+    <button
+      type="button"
+      class="filter__search-btn"
+      [disabled]="loading()"
+      (click)="searchRequested.emit()"
+    >
+      @if (loading()) {
+        <span class="filter__btn-spinner" aria-hidden="true"></span> Searching …
+      } @else {
+        <lucide-icon [img]="Search" [size]="16" aria-hidden="true" /> Find leads
+      }
     </button>
   }
 

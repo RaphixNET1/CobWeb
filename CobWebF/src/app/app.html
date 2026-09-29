@@ -2,7 +2,18 @@
   <h1 class="header__title heading">{{ pageTitle() }}</h1>
 
   <div class="header__actions">
-    <span class="status"><span class="status__dot"></span> API online</span>
+    <span class="status" role="status">
+      <span
+        class="status__dot"
+        [class.status__dot--off]="health.online() === false"
+        [class.status__dot--pending]="health.online() === null"
+      ></span>
+      @switch (health.online()) {
+        @case (true) { API online }
+        @case (false) { API offline }
+        @default { API … }
+      }
+    </span>
     <app-mode-setting></app-mode-setting>
     <img ngSrc="/assets/icon/CobWebLogoTransparentv2.png" alt="CobWeb" class="header__logo" height="200" width="500" />
   </div>

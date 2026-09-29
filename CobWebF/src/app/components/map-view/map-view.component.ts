@@ -7,12 +7,21 @@ import {
   ViewEncapsulation,
   effect,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
 import * as L from 'leaflet';
 
 import { Place } from '../../models/place.model';
+import {
+  Business,
+  LeadStatus,
+  formatDistance,
+  issueLabel,
+  statusLabel,
+  websiteLabel,
+} from '../../models/business.model';
 
 const GERMANY_OVERVIEW: L.LatLngTuple = [47.6965, 13.3457];
 const OVERVIEW_ZOOM = 7;
@@ -31,6 +40,22 @@ const PLACE_ICON = L.divIcon({
   iconAnchor: [7, 7],
 });
 
+const LEAD_ICONS: Record<LeadStatus, L.DivIcon> = {
+  noWebsite: leadIcon('map-pin--no-website'),
+  socialOnly: leadIcon('map-pin--social-only'),
+  outdated: leadIcon('map-pin--outdated'),
+};
+
+function leadIcon(modifier: string): L.DivIcon {
+  return L.divIcon({
+    className: `map-pin map-pin--business ${modifier}`,
+    html: '<span class="map-pin__dot"></span>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -6],
+  });
+}
+
 @Component({
   selector: 'app-map-view',
   templateUrl: './map-view.component.html',
@@ -42,6 +67,10 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   readonly center = input<Place | null>(null);
   readonly radiusKm = input(0);
   readonly places = input<Place[]>([]);
+  readonly businesses = input<Business[]>([]);
+  readonly selectedBusinessId = input<string | null>(null);
+
+  readonly businessSelected = output<Business>();
 
   private readonly host = viewChild.required<ElementRef<HTMLElement>>('mapHost');
 
@@ -51,6 +80,9 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   private centerMarker?: L.Marker;
   private radiusCircle?: L.Circle;
   private readonly placeLayer = L.layerGroup();
+  private readonly businessLayer = L.layerGroup();
+  private readonly businessMarkers = new Map<string, L.Marker>();
+  private activeBusinessId: string | null = null;
   private resizeObserver?: ResizeObserver;
 
   private lastCenterId: string | null = null;
@@ -68,6 +100,20 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
       const places = this.places();
       if (this.ready()) {
         this.renderPlaces(places);
+      }
+    });
+
+    effect(() => {
+      const businesses = this.businesses();
+      if (this.ready()) {
+        this.renderBusinesses(businesses);
+      }
+    });
+
+    effect(() => {
+      const id = this.selectedBusinessId();
+      if (this.ready()) {
+        this.highlightBusiness(id);
       }
     });
   }
@@ -88,6 +134,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
 
     L.control.zoom({ position: 'bottomright' }).addTo(this.map);
     this.placeLayer.addTo(this.map);
+    this.businessLayer.addTo(this.map);
 
     this.resizeObserver = new ResizeObserver(() => this.map?.invalidateSize());
     this.resizeObserver.observe(element);
@@ -155,6 +202,107 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
         .addTo(this.placeLayer);
     }
   }
+
+  private renderBusinesses(businesses: Business[]): void {
+    this.businessLayer.clearLayers();
+    this.businessMarkers.clear();
+    this.activeBusinessId = null;
+
+    // Keep popups clear of the filter (left) and results panel (right) - if the map is wide enough for that.
+    const panelPad = (this.map?.getSize().x ?? 0) > 1000 ? 380 : 40;
+
+    for (const business of businesses) {
+      const marker = L.marker([business.lat, business.lon], { icon: LEAD_ICONS[business.status], title: business.name })
+        .bindPopup(buildBusinessPopup(business), {
+          autoPanPaddingTopLeft: [panelPad, 40],
+          autoPanPaddingBottomRight: [panelPad, 40],
+        })
+        .on('click', () => this.businessSelected.emit(business))
+        .addTo(this.businessLayer);
+      this.businessMarkers.set(business.id, marker);
+    }
+  }
+
+  private highlightBusiness(id: string | null): void {
+    if (id === this.activeBusinessId) {
+      return;
+    }
+
+    const previous = this.activeBusinessId ? this.businessMarkers.get(this.activeBusinessId) : undefined;
+    previous?.getElement()?.classList.remove('is-active');
+    previous?.setZIndexOffset(0);
+
+    this.activeBusinessId = id;
+    const marker = id ? this.businessMarkers.get(id) : undefined;
+    if (!marker) {
+      return;
+    }
+
+    marker.getElement()?.classList.add('is-active');
+    marker.setZIndexOffset(1000);
+    if (!marker.isPopupOpen()) {
+      marker.openPopup();
+    }
+  }
+}
+
+function buildBusinessPopup(business: Business): HTMLElement {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'map-popup';
+
+  const category = document.createElement('span');
+  category.className = 'map-popup__category';
+  category.textContent = `${business.category} · Score ${business.score}`;
+
+  const title = document.createElement('span');
+  title.className = 'map-popup__title';
+  title.textContent = business.name;
+  wrapper.append(category, title);
+
+  if (business.address) {
+    const address = document.createElement('span');
+    address.className = 'map-popup__region';
+    address.textContent = business.address;
+    wrapper.append(address);
+  }
+
+  const badges = document.createElement('span');
+  badges.className = 'map-popup__badges';
+  const labels = business.status === 'outdated'
+    ? business.issues.map(issueLabel)
+    : [statusLabel(business.status)];
+  for (const label of labels) {
+    const badge = document.createElement('span');
+    badge.className = 'map-popup__badge';
+    badge.textContent = label;
+    badges.append(badge);
+  }
+  wrapper.append(badges);
+
+  if (business.website) {
+    const link = document.createElement('a');
+    link.className = 'map-popup__link';
+    link.href = business.website;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = websiteLabel(business.website);
+    wrapper.append(link);
+  }
+
+  if (business.phone) {
+    const phone = document.createElement('a');
+    phone.className = 'map-popup__link';
+    phone.href = `tel:${business.phone}`;
+    phone.textContent = business.phone;
+    wrapper.append(phone);
+  }
+
+  const distance = document.createElement('span');
+  distance.className = 'map-popup__distance';
+  distance.textContent = `${formatDistance(business.distanceKm)} away`;
+  wrapper.append(distance);
+
+  return wrapper;
 }
 
 function buildPopup(place: Place): HTMLElement {

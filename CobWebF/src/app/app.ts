@@ -5,6 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { LucideAngularModule, Map as MapIcon, Bookmark, User } from 'lucide-angular';
 import {ModeSetting} from './components/mode-setting/mode-setting';
+import { HealthService } from './services/health.service';
 
 @Component({
   imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule, NgOptimizedImage, ModeSetting],
@@ -15,6 +16,7 @@ import {ModeSetting} from './components/mode-setting/mode-setting';
 export class App {
 
   private readonly router = inject(Router);
+  protected readonly health = inject(HealthService);
 
   protected readonly pageTitle = toSignal(
     this.router.events.pipe(

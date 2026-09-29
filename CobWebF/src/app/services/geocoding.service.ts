@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
+import { NominatimResult } from '../models/nominatimResult.model';
 
 import { Place } from '../models/place.model';
 
@@ -8,13 +9,6 @@ const NOMINATIM_SEARCH_URL = 'https://nominatim.openstreetmap.org/search';
 
 const MIN_QUERY_LENGTH = 3;
 
-interface NominatimResult {
-  place_id: number;
-  lat: string;
-  lon: string;
-  name: string;
-  display_name: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class GeocodingService {

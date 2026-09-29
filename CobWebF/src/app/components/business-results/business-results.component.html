@@ -1,0 +1,185 @@
+<section class="results" aria-label="Search results">
+  <header class="results__head">
+    <div class="results__head-text">
+      <h2 class="results__title heading">leads</h2>
+      <p class="results__sub">
+        @if (status() === 'done') {
+          <span class="results__count">{{ counts().all }}</span> found ·
+        }
+        {{ radiusKm() }} km around {{ placeName() }}
+      </p>
+    </div>
+    <button type="button" class="results__close" aria-label="Close results" (click)="closed.emit()">
+      <lucide-icon [img]="X" [size]="18" aria-hidden="true" />
+    </button>
+  </header>
+
+  @switch (status()) {
+    @case ('loading') {
+      <p class="results__hint">
+        <span class="results__spinner" aria-hidden="true"></span>
+        Scanning businesses & checking websites …
+      </p>
+      <ul class="results__list" aria-hidden="true">
+        @for (row of skeletonRows; track row) {
+          <li class="results__skeleton">
+            <span class="results__skeleton-icon"></span>
+            <span class="results__skeleton-lines">
+              <span></span>
+              <span></span>
+            </span>
+          </li>
+        }
+      </ul>
+    }
+
+    @case ('error') {
+      <div class="results__state">
+        <lucide-icon [img]="TriangleAlert" [size]="28" aria-hidden="true" />
+        <p>Search failed. OpenStreetMap may be busy right now.</p>
+        <button type="button" class="results__retry" (click)="retry.emit()">
+          <lucide-icon [img]="RotateCw" [size]="16" aria-hidden="true" />
+          Try again
+        </button>
+      </div>
+    }
+
+    @case ('done') {
+      @if (!businesses().length) {
+        <div class="results__state">
+          <lucide-icon [img]="SearchX" [size]="28" aria-hidden="true" />
+          <p>No leads here – every business has an up-to-date website. Try a larger radius.</p>
+        </div>
+      } @else {
+        <div class="results__tabs" role="tablist" aria-label="Lead type">
+          @for (t of tabs; track t.id) {
+            <button
+              type="button"
+              role="tab"
+              class="results__tab"
+              [class.is-active]="tab() === t.id"
+              [attr.aria-selected]="tab() === t.id"
+              [disabled]="!counts()[t.id]"
+              (click)="tab.set(t.id)"
+            >
+              {{ t.label }} <span class="results__tab-count">{{ counts()[t.id] }}</span>
+            </button>
+          }
+        </div>
+
+        <div class="results__tools">
+          @if (showFilter()) {
+            <input
+              type="search"
+              class="results__filter"
+              placeholder="Filter by name or category …"
+              aria-label="Filter results"
+              [value]="filterText()"
+              (input)="onFilterInput($event)"
+            />
+          }
+          <button
+            type="button"
+            class="results__sort"
+            [title]="sortMode() === 'score' ? 'Sorted by lead score' : 'Sorted by distance'"
+            (click)="toggleSort()"
+          >
+            <lucide-icon [img]="ArrowDownWideNarrow" [size]="14" aria-hidden="true" />
+            {{ sortMode() === 'score' ? 'Score' : 'Distance' }}
+          </button>
+        </div>
+
+        <ul class="results__list">
+          @for (business of visible(); track business.id) {
+            <li
+              class="results__item"
+              [class.is-active]="business.id === selectedId()"
+              [attr.data-id]="business.id"
+            >
+              <div class="results__row">
+                <button type="button" class="results__main" (click)="businessSelected.emit(business)">
+                  <span
+                    class="results__score results__score--{{ scoreLevel(business.score) }}"
+                    [title]="'Lead score ' + business.score + ' / 100'"
+                  >
+                    {{ business.score }}
+                  </span>
+                  <span class="results__text">
+                    <span class="results__name">{{ business.name }}</span>
+                    <span class="results__meta">
+                      {{ business.category }} · {{ formatDistance(business.distanceKm) }}
+                    </span>
+                    <span class="results__badges">
+                      @if (business.status === 'outdated') {
+                        @for (issue of business.issues.slice(0, maxBadges); track issue.code) {
+                          <span class="results__badge" [title]="issueTitle(issue)">{{ issueLabel(issue) }}</span>
+                        }
+                        @if (business.issues.length > maxBadges) {
+                          <span class="results__badge results__badge--more" [title]="moreTitle(business)">
+                            +{{ business.issues.length - maxBadges }}
+                          </span>
+                        }
+                      } @else {
+                        <span class="results__badge results__badge--{{ business.status }}">
+                          {{ statusLabel(business.status) }}
+                        </span>
+                      }
+                    </span>
+                  </span>
+                </button>
+
+                @if (business.website; as website) {
+                  <a
+                    class="results__action"
+                    [href]="website"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [title]="websiteLabel(website) + (business.websiteFromEmail ? ' (from email domain)' : '')"
+                    [attr.aria-label]="'Open website of ' + business.name"
+                  >
+                    <lucide-icon [img]="ExternalLink" [size]="16" aria-hidden="true" />
+                  </a>
+                }
+              </div>
+
+              <div class="results__contacts">
+                @if (business.phone; as phone) {
+                  <a class="results__action" [href]="'tel:' + phone" [title]="phone" [attr.aria-label]="'Call ' + business.name">
+                    <lucide-icon [img]="Phone" [size]="15" aria-hidden="true" />
+                  </a>
+                }
+                @if (business.email; as email) {
+                  <a class="results__action" [href]="'mailto:' + email" [title]="email" [attr.aria-label]="'Email ' + business.name">
+                    <lucide-icon [img]="Mail" [size]="15" aria-hidden="true" />
+                  </a>
+                }
+                @if (business.facebook; as facebook) {
+                  <a class="results__action" [href]="facebook" target="_blank" rel="noopener noreferrer" title="Facebook">
+                    <lucide-icon [img]="Facebook" [size]="15" aria-hidden="true" />
+                  </a>
+                }
+                @if (business.instagram; as instagram) {
+                  <a class="results__action" [href]="instagram" target="_blank" rel="noopener noreferrer" title="Instagram">
+                    <lucide-icon [img]="Instagram" [size]="15" aria-hidden="true" />
+                  </a>
+                }
+                <a
+                  class="results__action results__action--search"
+                  [href]="searchUrl(business)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Google it – OSM may miss the website"
+                >
+                  <lucide-icon [img]="Search" [size]="15" aria-hidden="true" />
+                  <span>Google</span>
+                </a>
+              </div>
+            </li>
+          } @empty {
+            <li class="results__state results__state--inline">No match for “{{ filterText() }}”.</li>
+          }
+        </ul>
+      }
+    }
+  }
+</section>

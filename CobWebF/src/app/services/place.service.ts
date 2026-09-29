@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 
 import { Place } from '../models/place.model';
 import { Business } from '../models/business.model';
+import { API_URL } from '../api.config';
 
-const API_URL = 'https://localhost:7001/api';
 @Service()
 export class PlaceService {
   private readonly http = inject(HttpClient);
 
   getBusinesses(place: Place, radiusKm: number): Observable<Business[]> {
-    return this.http.get<Business[]>(`${API_URL}/businesses`, {
+    return this.http.get<Business[]>(`${API_URL}/detection`, {
       params: { lat: place.lat, lon: place.lon, radiusKm },
     });
   }

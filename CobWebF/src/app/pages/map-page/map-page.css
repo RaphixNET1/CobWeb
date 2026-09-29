@@ -14,3 +14,12 @@
 app-map-view { display: block; height: 100%; }
 
 .map-page__overlay { position: absolute; top: 16px; left: 16px; z-index: 1000; }
+
+/* Leaves room for the zoom control in the bottom right corner. */
+.map-page__results { position: absolute; top: 16px; right: 16px; bottom: 104px; z-index: 1000; pointer-events: none; }
+
+.map-page__results app-business-results { pointer-events: auto; }
+
+@media (max-width: 900px) {
+  .map-page__results { top: auto; left: 16px; right: 64px; bottom: 16px; height: 45%; }
+}

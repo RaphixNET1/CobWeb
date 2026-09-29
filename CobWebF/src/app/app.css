@@ -58,6 +58,15 @@
   height: 8px;
   border-radius: 50%;
   background: #22c55e;
+  transition: background 0.2s;
+}
+
+.status__dot--off {
+  background: #ef4444;
+}
+
+.status__dot--pending {
+  background: var(--muted);
 }
 
 .layout {
