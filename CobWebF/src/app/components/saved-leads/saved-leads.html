@@ -1,0 +1,62 @@
+@if (saved.leads().length) {
+  <p class="saved__count">
+    <span>{{ saved.leads().length }}</span> saved leads
+  </p>
+
+  <ul class="saved__grid">
+    @for (lead of saved.leads(); track lead.id) {
+      <li class="saved__card">
+        <div class="saved__head">
+          <span class="saved__score saved__score--{{ scoreLevel(lead.score) }}">
+            {{ lead.score }}
+          </span>
+
+          <div class="saved__text">
+            <span class="saved__name">{{ lead.name }}</span>
+            <span class="saved__meta">{{ lead.category }}</span>
+          </div>
+
+          <button
+            type="button"
+            class="saved__remove"
+            title="Remove from saved"
+            (click)="saved.toggle(lead)"
+          >
+            <lucide-icon [img]="BookmarkCheck" [size]="18" />
+          </button>
+        </div>
+
+        <span class="saved__badge saved__badge--{{ lead.status }}">
+          {{ statusLabel(lead.status) }}
+        </span>
+
+        <div class="saved__actions">
+          @if (lead.phone) {
+            <a class="saved__action" [href]="'tel:' + lead.phone">
+              <lucide-icon [img]="Phone" [size]="15" />
+              {{ lead.phone }}
+            </a>
+          }
+          @if (lead.email) {
+            <a class="saved__action" [href]="'mailto:' + lead.email">
+              <lucide-icon [img]="Mail" [size]="15" />
+              E-Mail
+            </a>
+          }
+          @if (lead.website) {
+            <a class="saved__action" [href]="lead.website" target="_blank" rel="noopener noreferrer">
+              <lucide-icon [img]="ExternalLink" [size]="15" />
+              Website
+            </a>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+} @else {
+  <div class="saved__empty">
+    <lucide-icon [img]="Bookmark" [size]="36" />
+    <p class="saved__empty-title">No saved leads yet</p>
+    <p>Tap the bookmark next to a lead on the map to keep it here.</p>
+  </div>
+}

@@ -6,7 +6,6 @@ namespace CobWebBackend.Service
 {
 	public class OverpassService
 	{
-		// The public instances are often overloaded - fall back to the next one on 429/5xx/timeouts.
 		private static readonly string[] InterpreterUrls =
 		[
 			"https://overpass-api.de/api/interpreter",
@@ -17,11 +16,10 @@ namespace CobWebBackend.Service
 		private const int MaxResults = 2000;
 		private const double EarthRadiusKm = 6371;
 
-		// OSM keys that mark something as a business. Order matters: the first match becomes the category.
+ 
 		private static readonly string[] BusinessKeys =
 			["shop", "craft", "office", "amenity", "healthcare", "tourism", "leisure"];
 
-		// amenity/leisure/tourism also tag public infrastructure - those are no customers.
 		private static readonly HashSet<string> IgnoredValues =
 		[
 			"school", "kindergarten", "college", "university", "place_of_worship", "townhall",
@@ -31,14 +29,12 @@ namespace CobWebBackend.Service
 			"playground", "park", "pitch", "garden", "nature_reserve", "track", "slipway",
 			"attraction", "viewpoint", "artwork", "information", "picnic_site", "camp_pitch",
 			"government", "diplomatic", "yes",
-			// Machines, infrastructure and money - nobody there buys a website.
 			"charging_station", "atm", "vending_machine", "bank", "bureau_de_change", "money_transfer",
 			"fuel", "car_sharing", "car_rental", "bicycle_rental", "boat_rental", "parcel_locker",
 			"post_office", "taxi", "gambling", "casino", "social_facility", "community_centre",
 			"public_bookcase", "shower", "lockers", "photo_booth", "ticket", "hunting_stand",
 		];
 
-		// Email domains of mail providers - they tell nothing about the business' own website.
 		private static readonly HashSet<string> FreemailDomains =
 		[
 			"gmail.com", "googlemail.com", "gmx.de", "gmx.at", "gmx.net", "gmx.ch", "web.de", "t-online.de",
@@ -66,7 +62,6 @@ namespace CobWebBackend.Service
 			return (body.elements ?? [])
 				.Select(e => ToBusiness(e, lat, lon))
 				.OfType<Business>()
-				// Shops are often mapped twice (node + building) - keep one per name and website/spot.
 				.GroupBy(b => (b.name.ToLowerInvariant(), DedupeKey(b)))
 				.Select(g => g.MinBy(b => b.distanceKm)!)
 				.Where(b => b.distanceKm <= radiusKm)
@@ -109,7 +104,6 @@ namespace CobWebBackend.Service
 			var around = string.Create(CultureInfo.InvariantCulture, $"around:{radiusM:0},{lat},{lon}");
 			var keys = string.Join('|', BusinessKeys);
 
-			// No website filter: businesses without a website are leads as well.
 			return $"""
 				[out:json][timeout:25];
 				nwr({around})["name"][~"^({keys})$"~"."];
@@ -134,7 +128,6 @@ namespace CobWebBackend.Service
 				return null;
 			}
 
-			// Chains (dm, Rossmann, McDonald's ...) carry brand tags - they never buy a website from us.
 			if (tags.ContainsKey("brand") || tags.ContainsKey("brand:wikidata"))
 			{
 				return null;
@@ -145,7 +138,6 @@ namespace CobWebBackend.Service
 			var websiteFromEmail = false;
 			if (website is null && EmailDomain(email) is { } domain)
 			{
-				// info@baeckerei-huber.de -> the site is almost certainly baeckerei-huber.de.
 				website = NormalizeWebsite(domain);
 				websiteFromEmail = website is not null;
 			}
@@ -178,21 +170,18 @@ namespace CobWebBackend.Service
 
 		private static string? NormalizeWebsite(string? raw)
 		{
-			// Some objects list several sites separated by ";".
 			var first = raw?.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
 			if (string.IsNullOrEmpty(first))
 			{
 				return null;
 			}
 
-			// No scheme given: start with http so a later check can see whether the site upgrades to https.
 			var url = first.Contains("://") ? first : $"http://{first}";
 			return Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https"
 				? uri.ToString()
 				: null;
 		}
 
-		// First non-empty value of the given keys; multi values ("a;b") are cut to the first one.
 		private static string? FirstValue(Dictionary<string, string> tags, params string[] keys)
 		{
 			return keys
@@ -212,7 +201,6 @@ namespace CobWebBackend.Service
 			return domain.Contains('.') && !FreemailDomains.Contains(domain) ? domain : null;
 		}
 
-		// OSM holds full URLs as well as bare handles ("baeckerei.huber", "@baeckerei.huber").
 		private static string? SocialUrl(string? raw, string baseUrl)
 		{
 			if (string.IsNullOrEmpty(raw))
@@ -232,7 +220,6 @@ namespace CobWebBackend.Service
 		{
 			if (b.website is null)
 			{
-				// Same name without website = the same shop mapped several times (node, building, entrance).
 				return "";
 			}
 

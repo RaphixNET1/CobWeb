@@ -12,13 +12,9 @@ namespace CobWebBackend.Controllers
 		private const double MinRadiusKm = 0.1;
 		private const double MaxRadiusKm = 5;
 		private const int MaxParallelChecks = 16;
-		// Only the nearest websites get checked - keeps a 5 km search in a sane time frame.
-		private const int MaxWebsiteChecks = 400;
-		// Below this an outdated site isn't worth a call (e.g. only a missing privacy link).
+		private const int MaxWebsiteChecks = 600;
 		private const int MinOutdatedScore = 20;
-		// Without own website: social-only businesses obviously want to be online -> hottest leads.
 		private const int SocialOnlyScore = 95;
-		// OSM may just miss the website tag, so this one is less certain.
 		private const int NoWebsiteScore = 50;
 
 		private readonly OverpassService overpass;
@@ -32,8 +28,6 @@ namespace CobWebBackend.Controllers
 			this.logger = logger;
 		}
 
-		// GET api/detection?lat=49.01&lon=12.1&radiusKm=2
-		// Returns only leads: businesses without a website or with an outdated one.
 		[HttpGet]
 		public async Task<ActionResult<List<Business>>> Get(
 			[FromQuery] double lat,
@@ -62,7 +56,6 @@ namespace CobWebBackend.Controllers
 				return Problem("OpenStreetMap (Overpass) is currently not reachable.", statusCode: StatusCodes.Status502BadGateway);
 			}
 
-			// businesses is sorted by distance, so the nearest sites win.
 			var toCheck = businesses
 				.Where(b => b.website is not null)
 				.Take(MaxWebsiteChecks)
@@ -90,7 +83,6 @@ namespace CobWebBackend.Controllers
 							return;
 						}
 
-						// The email domain has no website behind it - so there is none.
 						business.website = null;
 						business.websiteFromEmail = false;
 					}

@@ -14,17 +14,15 @@ namespace CobWebBackend
 			builder.Services.AddHttpClient("site", c =>
 			{
 				c.Timeout = TimeSpan.FromSeconds(15);
-				c.DefaultRequestHeaders.UserAgent.ParseAdd("SweepBot/0.1 (+deine@mail.at)");
+				c.DefaultRequestHeaders.UserAgent.ParseAdd("SweepBot/0.1");
 			});
 			builder.Services.AddHttpClient<OverpassService>(c =>
 			{
-				// Overpass itself may take up to 25s (see query timeout).
 				c.Timeout = TimeSpan.FromSeconds(35);
-				c.DefaultRequestHeaders.UserAgent.ParseAdd("CobWeb/0.1 (+https://github.com/RaphixNET1/CobWeb)");
+				c.DefaultRequestHeaders.UserAgent.ParseAdd("CobWeb/0.1");
 			});
 			builder.Services.AddHttpClient(WebsiteCheckService.HttpClientName, c =>
 			{
-				// Browser-like headers: many small sites answer bots with 403 or a stripped page.
 				c.DefaultRequestHeaders.UserAgent.ParseAdd(
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 (compatible; CobWeb/0.1)");
 				c.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml;q=0.9,*/*;q=0.8");
@@ -40,10 +38,9 @@ namespace CobWebBackend
 			app.UseCors();
 			app.MapControllers();
 
-			// Lets the frontend show whether the API is reachable.
 			app.MapGet("/api/health", () => Results.Ok());
 
-			app.MapGet("/api/check", async (string url, IHttpClientFactory f, CancellationToken ct) =>
+			/*app.MapGet("/api/check", async (string url, IHttpClientFactory f, CancellationToken ct) =>
 			{
 				var http = f.CreateClient("site");
 				using var res = await http.GetAsync(url, ct);
@@ -59,7 +56,7 @@ namespace CobWebBackend
 					isHttps = res.RequestMessage?.RequestUri?.Scheme == "https",
 					hasViewport = doc.QuerySelector("meta[name=viewport]") is not null
 				});
-			});
+			});*/
 
 			app.Run();
 		}

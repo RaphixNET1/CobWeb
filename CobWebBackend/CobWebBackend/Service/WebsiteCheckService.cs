@@ -9,7 +9,6 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace CobWebBackend.Service
 {
-	// score = 0-100, sum of the issue points.
 	public record WebsiteCheck(List<WebsiteIssue> issues, int score);
 
 	public class WebsiteCheckService
@@ -20,22 +19,18 @@ namespace CobWebBackend.Service
 		private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(1);
 		private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(6);
 		private static readonly TimeSpan SlowThreshold = TimeSpan.FromSeconds(3);
-		// Imprint/privacy are only judged when the page has a real link list (not a JS-only shell).
 		private const int MinLinksForLegalCheck = 5;
 
-		// "© 2014", "Copyright 2009 - 2016", "(c) 2018 Muster GmbH" ...
 		private static readonly Regex CopyrightRegex = new(
 			@"(?:©|\(c\)|copyright)(?<tail>.{0,40})",
 			RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 		private static readonly Regex YearRegex = new(@"\b(?:19|20)\d{2}\b", RegexOptions.Compiled);
 		private static readonly Regex FixedViewportRegex = new(@"width\s*=\s*\d+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-		// jquery-1.8.3.min.js, jquery.1.11.js, /jquery/2.2.4/jquery.min.js, jquery.min.js?ver=1.12.4
 		private static readonly Regex JqueryRegex = new(
 			@"jquery(?:[-./](?<v>\d+\.\d+(?:\.\d+)?)|[^""']*?[?&]ver=(?<v>\d+\.\d+(?:\.\d+)?))",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 		private static readonly Regex VersionRegex = new(@"(?<major>\d+)(?:\.(?<minor>\d+))?", RegexOptions.Compiled);
 
-		// CMS whose generator tag reveals an unsupported version: name -> first supported major version.
 		private static readonly (string name, int supportedMajor)[] VersionedCms =
 		[
 			("WordPress", 6),
@@ -44,11 +39,9 @@ namespace CobWebBackend.Service
 			("Drupal", 9),
 		];
 
-		// Generators that are outdated no matter the version.
 		private static readonly string[] LegacyGenerators =
 			["FrontPage", "Dreamweaver", "GoLive", "NetObjects", "Homepage-Baukasten", "Web.de", "iWeb", "Namo WebEditor"];
 
-		// name -> marker in the generator tag or the markup.
 		private static readonly (string name, string marker)[] SiteBuilders =
 		[
 			("Jimdo", "jimdo"),
@@ -104,14 +97,12 @@ namespace CobWebBackend.Service
 			var page = await FetchWithRetryAsync(url, ct);
 			var brokenHttps = false;
 
-			// Failing https (e.g. expired certificate) but working http is an outdated site, not an offline one.
 			if (page is null && url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
 			{
 				page = await FetchAsync("http://" + url["https://".Length..], ct);
 				brokenHttps = page is not null;
 			}
 
-			// OSM often links a subpage that moved away - the site itself may be fine.
 			if (page?.status is HttpStatusCode.NotFound or HttpStatusCode.Gone
 				&& new Uri(url) is { AbsolutePath.Length: > 1 } deepLink)
 			{
@@ -123,7 +114,6 @@ namespace CobWebBackend.Service
 				return Result([Issue(IssueCode.Unreachable)]);
 			}
 
-			// Other 4xx are mostly bot protection - we can't judge the site, so it's no lead.
 			if ((int)page.status >= 400)
 			{
 				return Result([]);
@@ -153,7 +143,6 @@ namespace CobWebBackend.Service
 			var age = DateTime.UtcNow.Year - copyrightYear;
 			if (age > 3)
 			{
-				// Really old sites weigh more.
 				issues.Add(new WebsiteIssue(IssueCode.OldCopyright, age > 7 ? 25 : Points[IssueCode.OldCopyright], copyrightYear.ToString()));
 			}
 
@@ -227,7 +216,6 @@ namespace CobWebBackend.Service
 				found.Add("HTML 4 tags");
 			}
 
-			// HTML 4 / XHTML doctypes carry a public identifier, "<!DOCTYPE html>" doesn't.
 			if (doc.Doctype is null || !string.IsNullOrEmpty(doc.Doctype.PublicIdentifier))
 			{
 				found.Add("old doctype");
@@ -264,7 +252,6 @@ namespace CobWebBackend.Service
 					continue;
 				}
 
-				// Without a version number in the tag we can't tell - no issue.
 				var version = ParseVersion(generator[(index + name.Length)..]);
 				if (version is { } v && v.major < supportedMajor)
 				{
@@ -295,7 +282,6 @@ namespace CobWebBackend.Service
 			return (int.Parse(match.Groups["major"].Value), minor);
 		}
 
-		// Newest year right after a copyright sign - "2009 - 2016" means 2016.
 		private static int? FindCopyrightYear(string text)
 		{
 			int? newest = null;
@@ -315,7 +301,6 @@ namespace CobWebBackend.Service
 
 		private async Task<Page?> FetchWithRetryAsync(string url, CancellationToken ct)
 		{
-			// One retry - a single hiccup must not turn a site into "offline".
 			var page = await FetchAsync(url, ct);
 			if (page is not null)
 			{
@@ -352,7 +337,6 @@ namespace CobWebBackend.Service
 		private static WebsiteIssue Issue(string code, string? detail = null) => new(code, Points[code], detail);
 
 		private static WebsiteCheck Result(List<WebsiteIssue> issues) =>
-			// Heaviest findings first - the frontend shows only the top ones.
 			new(issues.OrderByDescending(i => i.points).ToList(), Math.Min(100, issues.Sum(i => i.points)));
 
 		private record Page(HttpStatusCode status, Uri? finalUrl, string html, TimeSpan duration);

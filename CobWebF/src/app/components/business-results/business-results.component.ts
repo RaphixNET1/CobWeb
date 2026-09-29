@@ -21,6 +21,8 @@ import {
   Search,
   SearchX,
   TriangleAlert,
+  Bookmark,
+  BookmarkCheck,
   X,
 } from 'lucide-angular';
 
@@ -36,6 +38,7 @@ import {
   statusLabel,
   websiteLabel,
 } from '../../models/business.model';
+import {SaveleadService} from '../../services/savelead.service';
 
 
 const FILTER_THRESHOLD = 8;
@@ -61,6 +64,7 @@ const TABS: { id: Tab; label: string }[] = [
 })
 export class BusinessResultsComponent {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly savelead = inject(SaveleadService);
 
   protected readonly ArrowDownWideNarrow = ArrowDownWideNarrow;
   protected readonly ExternalLink = ExternalLink;
@@ -73,6 +77,8 @@ export class BusinessResultsComponent {
   protected readonly SearchX = SearchX;
   protected readonly TriangleAlert = TriangleAlert;
   protected readonly X = X;
+  protected readonly Bookmark = Bookmark;
+  protected readonly BookmarkCheck = BookmarkCheck;
 
   protected readonly tabs = TABS;
   protected readonly skeletonRows = SKELETON_ROWS;
@@ -155,5 +161,13 @@ export class BusinessResultsComponent {
 
   toggleSort(): void {
     this.sortMode.update((mode) => (mode === 'score' ? 'distance' : 'score'));
+  }
+
+  isSaved(business: Business): boolean {
+    return this.savelead.isSaved(business.id);
+  }
+
+  toggleSave(business: Business): void {
+    this.savelead.toggle(business);
   }
 }

@@ -264,6 +264,23 @@
     box-shadow: 0 2px 6px rgb(15 23 42 / 10%);
   }
 
+  .results__save {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: var(--active-bg);
+      color: var(--accent);
+    }
+
+    &.is-saved {
+      color: var(--accent);
+    }
+  }
+
   &:disabled {
     cursor: default;
     opacity: 0.5;
