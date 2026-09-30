@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { BookmarkCheck, Bookmark, ExternalLink, LucideAngularModule, Mail, Phone } from 'lucide-angular';
+import { BookmarkCheck, Bookmark, ExternalLink, LucideAngularModule, Mail, Phone, HeartPlus, HeartMinus } from 'lucide-angular';
 
 import { SaveleadService } from '../../services/savelead.service';
 @Component({
@@ -18,6 +18,8 @@ export class SavedLeads {
   protected readonly ExternalLink = ExternalLink;
   protected readonly Phone = Phone;
   protected readonly Mail = Mail;
+  protected readonly HeartPlus = HeartPlus;
+  protected readonly HeartMinus = HeartMinus;
 
   scoreLevel(score: number): string {
     if (score >= 70) return 'hot';
