@@ -1,10 +1,38 @@
 @if (saved.leads().length) {
-  <p class="saved__count">
-    <span>{{ saved.leads().length }}</span> saved leads
-  </p>
+  <div class="saved__toolbar">
+    <p class="saved__count">
+      <span>{{ saved.leads().length }}</span> saved leads
+    </p>
+
+    <div class="saved__sort" role="tablist" aria-label="Sort leads">
+      <button
+        type="button"
+        role="tab"
+        class="saved__sort-btn"
+        [class.is-active]="sortMode() === 'newest'"
+        [attr.aria-selected]="sortMode() === 'newest'"
+        (click)="sortMode.set('newest')"
+      >
+        <lucide-icon [img]="Clock" [size]="14" />
+        Newest
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        class="saved__sort-btn"
+        [class.is-active]="sortMode() === 'score'"
+        [attr.aria-selected]="sortMode() === 'score'"
+        (click)="sortMode.set('score')"
+      >
+        <lucide-icon [img]="ArrowDownWideNarrow" [size]="14" />
+        Score
+      </button>
+    </div>
+  </div>
 
   <ul class="saved__grid">
-    @for (lead of saved.leads(); track lead.id) {
+    @for (lead of visibleLeads(); track lead.id) {
       <li class="saved__card">
         <div class="saved__head">
           <span class="saved__score saved__score--{{ scoreLevel(lead.score) }}">

@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { BookmarkCheck, Bookmark, ExternalLink, LucideAngularModule, Mail, Phone, HeartPlus, HeartMinus } from 'lucide-angular';
+import {Component, computed, inject, signal} from '@angular/core';
+import { BookmarkCheck, Bookmark, ArrowDownWideNarrow, ExternalLink, Clock, LucideAngularModule, Mail, Phone, HeartPlus, HeartMinus } from 'lucide-angular';
 import { SavedLead } from '../../models/savedLead.model';
 import { SaveleadService } from '../../services/savelead.service';
 @Component({
@@ -20,6 +20,19 @@ export class SavedLeads {
   protected readonly Mail = Mail;
   protected readonly HeartPlus = HeartPlus;
   protected readonly HeartMinus = HeartMinus;
+
+  protected readonly ArrowDownWideNarrow = ArrowDownWideNarrow;
+  protected readonly Clock = Clock;
+
+  readonly sortMode = signal<'newest' | 'score'>('newest');
+
+  readonly visibleLeads = computed(() => {
+    const leads = [...this.saved.leads()];
+
+    return this.sortMode() === 'score'
+      ? leads.sort((a, b) => b.score - a.score)
+      : leads.sort((a, b) => b.savedAt.localeCompare(a.savedAt));
+  });
 
   scoreLevel(score: number): string {
     if (score >= 70) return 'hot';
