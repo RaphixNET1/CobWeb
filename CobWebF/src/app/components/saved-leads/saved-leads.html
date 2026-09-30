@@ -16,14 +16,26 @@
             <span class="saved__meta">{{ lead.category }}</span>
           </div>
 
-          <button
-            type="button"
-            class="saved__remove"
-            title="Remove from saved"
-            (click)="saved.toggle(lead)"
-          >
-            <lucide-icon [img]="BookmarkCheck" [size]="18" />
-          </button>
+          <div class="saved__head-actions">
+            <button
+              type="button"
+              class="saved__icon-btn"
+              [class.is-active]="isFavorite(lead)"
+              [title]="isFavorite(lead) ? 'Remove from favorites' : 'Add to favorites'"
+              (click)="toggleFavorite(lead)"
+            >
+              <lucide-icon [img]="isFavorite(lead) ? HeartMinus : HeartPlus" [size]="18" />
+            </button>
+
+            <button
+              type="button"
+              class="saved__icon-btn is-active"
+              title="Remove from saved"
+              (click)="saved.toggle(lead)"
+            >
+              <lucide-icon [img]="BookmarkCheck" [size]="18" />
+            </button>
+          </div>
         </div>
 
         <span class="saved__badge saved__badge--{{ lead.status }}">

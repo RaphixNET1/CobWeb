@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { BookmarkCheck, Bookmark, ExternalLink, LucideAngularModule, Mail, Phone, HeartPlus, HeartMinus } from 'lucide-angular';
-
+import { SavedLead } from '../../models/savedLead.model';
 import { SaveleadService } from '../../services/savelead.service';
 @Component({
   imports: [
@@ -34,5 +34,12 @@ export class SavedLeads {
       case 'outdated': return 'Outdated';
       default: return status;
     }
+  }
+  isFavorite(lead: SavedLead): boolean {
+    return lead.stage === 'priority';
+  }
+
+  toggleFavorite(lead: SavedLead): void {
+    this.saved.setStage(lead.id, this.isFavorite(lead) ? 'new' : 'priority');
   }
 }

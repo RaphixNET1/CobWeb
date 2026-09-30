@@ -185,3 +185,36 @@
   font-weight: 600;
   color: var(--text);
 }
+
+.saved__head-actions {
+  display: flex;
+  gap: 2px;
+  flex: none;
+}
+
+.saved__icon-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+
+  &:hover {
+    background: var(--active-bg);
+    color: var(--accent);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.is-active {
+    color: var(--accent);
+  }
+}

@@ -43,4 +43,5 @@ function loadLeads(): SavedLead[] {
     stage: lead.stage ?? 'new',
     savedAt: lead.savedAt ?? new Date().toISOString(),
   }));
+
 }
