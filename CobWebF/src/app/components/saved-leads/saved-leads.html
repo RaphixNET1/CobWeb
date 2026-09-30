@@ -1,9 +1,12 @@
 @if (saved.leads().length) {
   <div class="saved__toolbar">
-    <p class="saved__count">
-      <span>{{ visibleLeads().length }}</span>
-      {{ onlyPriority() ? 'priority leads' : 'saved leads' }}
-    </p>
+    <div class="saved__summary">
+      <lucide-icon [img]="BookmarkCheck" [size]="24" />
+      <span class="saved__summary-num">{{ visibleLeads().length }}</span>
+      <span class="saved__summary-label">
+    {{ onlyPriority() ? 'priority leads' : 'saved leads' }}
+  </span>
+    </div>
 
     <div class="saved__controls">
       <button
@@ -18,6 +21,8 @@
         Priority
         <span class="saved__filter-count">{{ priorityCount() }}</span>
       </button>
+
+      <span class="saved__divider" aria-hidden="true"></span>
 
       <div class="saved__sort" role="tablist" aria-label="Sort leads">
         <button
