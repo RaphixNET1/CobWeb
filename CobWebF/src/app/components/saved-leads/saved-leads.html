@@ -1,39 +1,55 @@
 @if (saved.leads().length) {
   <div class="saved__toolbar">
     <p class="saved__count">
-      <span>{{ saved.leads().length }}</span> saved leads
+      <span>{{ visibleLeads().length }}</span>
+      {{ onlyPriority() ? 'priority leads' : 'saved leads' }}
     </p>
 
-    <div class="saved__sort" role="tablist" aria-label="Sort leads">
+    <div class="saved__controls">
       <button
         type="button"
-        role="tab"
-        class="saved__sort-btn"
-        [class.is-active]="sortMode() === 'newest'"
-        [attr.aria-selected]="sortMode() === 'newest'"
-        (click)="sortMode.set('newest')"
+        class="saved__filter"
+        [class.is-active]="onlyPriority()"
+        [attr.aria-pressed]="onlyPriority()"
+        [disabled]="!priorityCount()"
+        (click)="onlyPriority.set(!onlyPriority())"
       >
-        <lucide-icon [img]="Clock" [size]="14" />
-        Newest
+        <lucide-icon [img]="Heart" [size]="14" />
+        Priority
+        <span class="saved__filter-count">{{ priorityCount() }}</span>
       </button>
 
-      <button
-        type="button"
-        role="tab"
-        class="saved__sort-btn"
-        [class.is-active]="sortMode() === 'score'"
-        [attr.aria-selected]="sortMode() === 'score'"
-        (click)="sortMode.set('score')"
-      >
-        <lucide-icon [img]="ArrowDownWideNarrow" [size]="14" />
-        Score
-      </button>
+      <div class="saved__sort" role="tablist" aria-label="Sort leads">
+        <button
+          type="button"
+          role="tab"
+          class="saved__sort-btn"
+          [class.is-active]="sortMode() === 'newest'"
+          [attr.aria-selected]="sortMode() === 'newest'"
+          (click)="sortMode.set('newest')"
+        >
+          <lucide-icon [img]="Clock" [size]="14" />
+          Newest
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          class="saved__sort-btn"
+          [class.is-active]="sortMode() === 'score'"
+          [attr.aria-selected]="sortMode() === 'score'"
+          (click)="sortMode.set('score')"
+        >
+          <lucide-icon [img]="ArrowDownWideNarrow" [size]="14" />
+          Score
+        </button>
+      </div>
     </div>
   </div>
 
   <ul class="saved__grid">
     @for (lead of visibleLeads(); track lead.id) {
-      <li class="saved__card">
+      <li class="saved__card" [class.is-priority]="isFavorite(lead)">
         <div class="saved__head">
           <span class="saved__score saved__score--{{ scoreLevel(lead.score) }}">
             {{ lead.score }}
@@ -49,7 +65,7 @@
               type="button"
               class="saved__icon-btn"
               [class.is-active]="isFavorite(lead)"
-              [title]="isFavorite(lead) ? 'Remove from favorites' : 'Add to favorites'"
+              [title]="isFavorite(lead) ? 'Remove from priority' : 'Prioritize lead'"
               (click)="toggleFavorite(lead)"
             >
               <lucide-icon [img]="isFavorite(lead) ? HeartMinus : HeartPlus" [size]="18" />
@@ -90,6 +106,11 @@
             </a>
           }
         </div>
+      </li>
+    } @empty {
+      <li class="saved__empty saved__empty--inline">
+        <lucide-icon [img]="Heart" [size]="28" />
+        <p>No priority leads yet. Tap the heart on a lead to prioritize it.</p>
       </li>
     }
   </ul>
