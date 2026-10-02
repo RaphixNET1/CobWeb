@@ -1,1 +1,153 @@
-<main class="content"></main>
+<main class="content">
+  <a class="detail__back" routerLink="/saved">
+    <lucide-icon [img]="ArrowLeft" [size]="16" />
+    Saved leads
+  </a>
+
+  @if (lead(); as lead) {
+    <section class="detail__card detail__hero" [class.is-priority]="isFavorite(lead)">
+      <span class="detail__score detail__score--{{ scoreLevel(lead.score) }}">
+        {{ lead.score }}
+        <small>/ 100</small>
+      </span>
+
+      <div class="detail__title">
+        <h2 class="detail__name">{{ lead.name }}</h2>
+        <span class="detail__meta">
+          {{ lead.category }} · saved {{ lead.savedAt | date: 'dd.MM.yyyy' }}
+        </span>
+        <span class="detail__badge detail__badge--{{ lead.status }}">
+          {{ statusLabel(lead.status) }}
+        </span>
+      </div>
+
+      <div class="detail__hero-actions">
+        <button
+          type="button"
+          class="detail__icon-btn"
+          [class.is-active]="isFavorite(lead)"
+          [title]="isFavorite(lead) ? 'Remove from priority' : 'Prioritize lead'"
+          (click)="toggleFavorite(lead)"
+        >
+          <lucide-icon [img]="isFavorite(lead) ? HeartMinus : HeartPlus" [size]="20" />
+        </button>
+        <button
+          type="button"
+          class="detail__icon-btn is-active"
+          title="Remove from saved"
+          (click)="remove(lead)"
+        >
+          <lucide-icon [img]="BookmarkCheck" [size]="20" />
+        </button>
+      </div>
+    </section>
+
+    <div class="detail__grid">
+      <section class="detail__card detail__findings">
+        <h3 class="detail__section-title heading">why this lead</h3>
+        <p class="detail__reason">{{ statusReason() }}</p>
+
+        @if (lead.issues.length) {
+          <ul class="detail__issues">
+            @for (issue of lead.issues; track issue.code) {
+              <li class="detail__issue">
+                <div class="detail__issue-head">
+                  <lucide-icon class="detail__issue-icon" [img]="TriangleAlert" [size]="16" />
+                  <span class="detail__issue-label">{{ issueLabel(issue) }}</span>
+                  <span class="detail__issue-points">+{{ issue.points }}</span>
+                </div>
+                <div class="detail__bar">
+                  <span [style.width.%]="issueShare(issue)"></span>
+                </div>
+                <p class="detail__issue-reason">{{ issueReason(issue) }}</p>
+                @if (issue.detail) {
+                  <span class="detail__issue-detail">Detected: {{ issue.detail }}</span>
+                }
+              </li>
+            }
+          </ul>
+
+          <div class="detail__total">
+            <span>Lead score</span>
+            <span class="detail__total-value">
+              @if (pointsTotal() > 100) {
+                <span class="detail__total-raw">{{ pointsTotal() }} pts, capped at</span>
+              }
+              {{ lead.score }} / 100
+            </span>
+          </div>
+        } @else if (lead.status === 'outdated') {
+          <p class="detail__empty">
+            <lucide-icon [img]="CircleCheck" [size]="18" />
+            No detailed findings stored for this lead.
+          </p>
+        }
+      </section>
+
+      <aside class="detail__card detail__contact">
+        <h3 class="detail__section-title heading">contact</h3>
+
+        <ul class="detail__contact-list">
+          @if (lead.address) {
+            <li>
+              <lucide-icon [img]="MapPin" [size]="16" />
+              <span>{{ lead.address }}</span>
+            </li>
+          }
+          @if (lead.phone) {
+            <li>
+              <lucide-icon [img]="Phone" [size]="16" />
+              <a [href]="'tel:' + lead.phone">{{ lead.phone }}</a>
+            </li>
+          }
+          @if (lead.email) {
+            <li>
+              <lucide-icon [img]="Mail" [size]="16" />
+              <a [href]="'mailto:' + lead.email">{{ lead.email }}</a>
+            </li>
+          }
+          @if (lead.website) {
+            <li>
+              <lucide-icon [img]="ExternalLink" [size]="16" />
+              <a [href]="lead.website" target="_blank" rel="noopener noreferrer">
+                {{ websiteLabel(lead.website) }}
+              </a>
+              @if (lead.websiteFromEmail) {
+                <span class="detail__hint">from email domain</span>
+              }
+            </li>
+          }
+          @if (lead.openingHours) {
+            <li>
+              <lucide-icon [img]="Clock" [size]="16" />
+              <span>{{ lead.openingHours }}</span>
+            </li>
+          }
+          @if (lead.facebook) {
+            <li>
+              <lucide-icon [img]="Facebook" [size]="16" />
+              <a [href]="lead.facebook" target="_blank" rel="noopener noreferrer">Facebook</a>
+            </li>
+          }
+          @if (lead.instagram) {
+            <li>
+              <lucide-icon [img]="Instagram" [size]="16" />
+              <a [href]="lead.instagram" target="_blank" rel="noopener noreferrer">Instagram</a>
+            </li>
+          }
+        </ul>
+
+        <a class="detail__google" [href]="searchUrl(lead)" target="_blank" rel="noopener noreferrer">
+          <lucide-icon [img]="Search" [size]="15" />
+          Google it
+        </a>
+      </aside>
+    </div>
+  } @else {
+    <div class="detail__missing">
+      <lucide-icon [img]="BookmarkX" [size]="36" />
+      <p class="detail__missing-title">Lead not found</p>
+      <p>It may have been removed from your saved leads.</p>
+    </div>
+  }
+</main>
