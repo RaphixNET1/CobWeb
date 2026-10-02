@@ -54,7 +54,13 @@
 
   <ul class="saved__grid">
     @for (lead of visibleLeads(); track lead.id) {
-      <li class="saved__card" [class.is-priority]="isFavorite(lead)">
+      <li
+        class="saved__card"
+        [class.is-priority]="isFavorite(lead)"
+        tabindex="0"
+        (click)="openLead(lead)"
+        (keydown.enter)="openLead(lead)"
+      >
         <div class="saved__head">
           <span class="saved__score saved__score--{{ scoreLevel(lead.score) }}">
             {{ lead.score }}
@@ -65,7 +71,7 @@
             <span class="saved__meta">{{ lead.category }}</span>
           </div>
 
-          <div class="saved__head-actions">
+          <div class="saved__head-actions" (click)="$event.stopPropagation()">
             <button
               type="button"
               class="saved__icon-btn"
@@ -91,7 +97,7 @@
           {{ statusLabel(lead.status) }}
         </span>
 
-        <div class="saved__actions">
+        <div class="saved__actions" (click)="$event.stopPropagation()">
           @if (lead.phone) {
             <a class="saved__action" [href]="'tel:' + lead.phone">
               <lucide-icon [img]="Phone" [size]="15" />

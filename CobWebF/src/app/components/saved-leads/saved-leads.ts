@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   ArrowDownWideNarrow,
   Bookmark,
@@ -24,6 +25,7 @@ import { SaveleadService } from '../../services/savelead.service';
 })
 export class SavedLeads {
   protected readonly saved = inject(SaveleadService);
+  private readonly router = inject(Router);
 
   protected readonly ArrowDownWideNarrow = ArrowDownWideNarrow;
   protected readonly Bookmark = Bookmark;
@@ -54,6 +56,10 @@ export class SavedLeads {
       ? leads.sort((a, b) => b.score - a.score)
       : leads.sort((a, b) => b.savedAt.localeCompare(a.savedAt));
   });
+
+  openLead(lead: SavedLead): void {
+    this.router.navigate(['/saved', lead.id]);
+  }
 
   isFavorite(lead: SavedLead): boolean {
     return lead.stage === 'priority';
