@@ -69,6 +69,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
   readonly places = input<Place[]>([]);
   readonly businesses = input<Business[]>([]);
   readonly selectedBusinessId = input<string | null>(null);
+  readonly scanning = input(false);
 
   readonly businessSelected = output<Business>();
 
@@ -93,6 +94,15 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
       const radiusKm = this.radiusKm();
       if (this.ready()) {
         this.renderCenter(center, radiusKm);
+      }
+    });
+
+    effect(() => {
+      this.center();
+      this.radiusKm();
+      const scanning = this.scanning();
+      if (this.ready()) {
+        this.radiusCircle?.getElement()?.classList.toggle('is-scanning', scanning);
       }
     });
 

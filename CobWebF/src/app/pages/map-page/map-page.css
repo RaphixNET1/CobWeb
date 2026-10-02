@@ -13,6 +13,19 @@
 
 app-map-view { display: block; height: 100%; }
 
+.map-page__lock {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  background: rgb(15 23 42 / 12%);
+  cursor: progress;
+  animation: map-lock-in 0.3s ease-out;
+}
+
+@keyframes map-lock-in {
+  from { opacity: 0; }
+}
+
 .map-page__overlay { position: absolute; top: 16px; left: 16px; z-index: 1000; }
 
 /* Leaves room for the zoom control in the bottom right corner. */

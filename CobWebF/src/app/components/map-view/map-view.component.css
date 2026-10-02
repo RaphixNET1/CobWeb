@@ -169,3 +169,22 @@ app-map-view {
   fill: var(--accent);
   fill-opacity: 0.12;
 }
+
+.radius-circle.is-scanning {
+  stroke-dasharray: 12 8;
+  animation: radius-march 0.8s linear infinite, radius-glow 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes radius-march {
+  to { stroke-dashoffset: -20; }
+}
+
+@keyframes radius-glow {
+  to { fill-opacity: 0.28; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radius-circle.is-scanning {
+    animation: none;
+  }
+}

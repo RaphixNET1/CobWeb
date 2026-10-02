@@ -28,6 +28,7 @@ import {
 
 import {
   Business,
+  DetectionProgress,
   LeadStatus,
   SearchStatus,
   formatDistance,
@@ -39,10 +40,10 @@ import {
   websiteLabel,
 } from '../../models/business.model';
 import {SaveleadService} from '../../services/savelead.service';
+import { ScanProgressComponent } from '../scan-progress/scan-progress.component';
 
 
 const FILTER_THRESHOLD = 8;
-const SKELETON_ROWS = [1, 2, 3, 4, 5];
 const MAX_BADGES = 3;
 
 type Tab = 'all' | LeadStatus;
@@ -60,7 +61,7 @@ const TABS: { id: Tab; label: string }[] = [
   templateUrl: './business-results.component.html',
   styleUrls: ['./business-results.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, ScanProgressComponent],
 })
 export class BusinessResultsComponent {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -81,7 +82,6 @@ export class BusinessResultsComponent {
   protected readonly BookmarkCheck = BookmarkCheck;
 
   protected readonly tabs = TABS;
-  protected readonly skeletonRows = SKELETON_ROWS;
   protected readonly maxBadges = MAX_BADGES;
   protected readonly websiteLabel = websiteLabel;
   protected readonly formatDistance = formatDistance;
@@ -93,6 +93,8 @@ export class BusinessResultsComponent {
 
   readonly businesses = input<Business[]>([]);
   readonly status = input<SearchStatus>('idle');
+  readonly progress = input<DetectionProgress | null>(null);
+  readonly finishing = input(false);
   readonly selectedId = input<string | null>(null);
   readonly placeName = input('');
   readonly radiusKm = input(1);

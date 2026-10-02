@@ -1,4 +1,4 @@
-<div class="filter">
+<div class="filter" [class.is-locked]="loading()">
   <div class="filter__search">
     <input
       #search
@@ -6,6 +6,7 @@
       class="filter__input"
       placeholder="Search location … (Enter)"
       inputmode="search"
+      [disabled]="loading()"
       (input)="onSearchInput($event)"
       (keydown.enter)="onSearchSubmit(search.value)"
     />
@@ -13,7 +14,7 @@
     @if (searching()) {
       <span class="filter__spinner" aria-hidden="true"></span>
     } @else if (search.value) {
-      <button type="button" class="filter__clear" (click)="search.value = ''; clear()">✕</button>
+      <button type="button" class="filter__clear" [disabled]="loading()" (click)="search.value = ''; clear()">✕</button>
     }
   </div>
 
@@ -51,13 +52,14 @@
       min="1"
       [max]="maxRadiusKm()"
       step="1"
+      [disabled]="loading()"
       [value]="radiusKm()"
       (input)="onRadiusInput($event)"
     />
   </div>
 
   @if (selectedName(); as name) {
-    <button type="button" class="filter__chip" (click)="search.value = ''; clear()">
+    <button type="button" class="filter__chip" [disabled]="loading()" (click)="search.value = ''; clear()">
       <span class="filter__chip-text">{{ name }} · {{ radiusKm() }} km</span>
       <lucide-icon [img]="XCircle" [size]="16" aria-hidden="true" />
     </button>
@@ -69,7 +71,7 @@
       (click)="searchRequested.emit()"
     >
       @if (loading()) {
-        <span class="filter__btn-spinner" aria-hidden="true"></span> Searching …
+        <span class="filter__btn-spinner" aria-hidden="true"></span> Scanning …
       } @else {
         <lucide-icon [img]="Search" [size]="16" aria-hidden="true" /> Find leads
       }

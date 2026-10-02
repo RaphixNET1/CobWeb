@@ -9,28 +9,20 @@
         {{ radiusKm() }} km around {{ placeName() }}
       </p>
     </div>
-    <button type="button" class="results__close" aria-label="Close results" (click)="closed.emit()">
+    <button
+      type="button"
+      class="results__close"
+      [attr.aria-label]="status() === 'loading' ? 'Cancel search' : 'Close results'"
+      [title]="status() === 'loading' ? 'Cancel search' : 'Close results'"
+      (click)="closed.emit()"
+    >
       <lucide-icon [img]="X" [size]="18" aria-hidden="true" />
     </button>
   </header>
 
   @switch (status()) {
     @case ('loading') {
-      <p class="results__hint">
-        <span class="results__spinner" aria-hidden="true"></span>
-        Scanning businesses & checking websites …
-      </p>
-      <ul class="results__list" aria-hidden="true">
-        @for (row of skeletonRows; track row) {
-          <li class="results__skeleton">
-            <span class="results__skeleton-icon"></span>
-            <span class="results__skeleton-lines">
-              <span></span>
-              <span></span>
-            </span>
-          </li>
-        }
-      </ul>
+      <app-scan-progress [progress]="progress()" [finishing]="finishing()" />
     }
 
     @case ('error') {

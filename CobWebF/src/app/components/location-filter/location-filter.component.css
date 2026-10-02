@@ -228,3 +228,18 @@
 @keyframes filter-reveal {
   from { opacity: 0; transform: translateY(-4px); }
 }
+
+.filter.is-locked {
+  .filter__search,
+  .filter__radius,
+  .filter__chip {
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  input,
+  .filter__clear,
+  .filter__chip {
+    cursor: not-allowed;
+  }
+}

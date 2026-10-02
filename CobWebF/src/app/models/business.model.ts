@@ -52,6 +52,23 @@ export interface Business {
 
 export type SearchStatus = 'idle' | 'loading' | 'done' | 'error';
 
+export interface CheckedSite {
+  n: number;
+  name: string;
+  lead: boolean;
+}
+
+export interface DetectionProgress {
+  checked: number;
+  total: number;
+  leads: number;
+  recent: CheckedSite[];
+}
+
+export type DetectionEvent =
+  | ({ type: 'progress' } & DetectionProgress)
+  | { type: 'result'; businesses: Business[] };
+
 export type ScoreLevel = 'hot' | 'warm' | 'mild';
 
 export function scoreLevel(score: number): ScoreLevel {

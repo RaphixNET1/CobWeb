@@ -5,8 +5,13 @@
       [radiusKm]="radiusKm()"
       [businesses]="businesses()"
       [selectedBusinessId]="selectedBusinessId()"
+      [scanning]="status() === 'loading'"
       (businessSelected)="selectBusiness($event)"
     />
+
+    @if (status() === 'loading') {
+      <div class="map-page__lock" aria-hidden="true"></div>
+    }
 
     <div class="map-page__overlay">
       <app-location-filter
@@ -24,6 +29,8 @@
         <app-business-results
           [businesses]="businesses()"
           [status]="status()"
+          [progress]="progress()"
+          [finishing]="finishing()"
           [selectedId]="selectedBusinessId()"
           [placeName]="searchedPlace()?.name ?? ''"
           [radiusKm]="searchedRadiusKm()"

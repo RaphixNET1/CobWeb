@@ -1,0 +1,94 @@
+<div
+  class="scan scan--{{ phase() }}"
+  role="progressbar"
+  aria-label="Lead search progress"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="percent()"
+  [attr.aria-valuetext]="valueText()"
+>
+  <div class="scan__radar">
+    <div class="scan__sweep" aria-hidden="true"></div>
+
+    <svg class="scan__web" viewBox="0 0 200 200" aria-hidden="true">
+      @for (ring of webRings; track $index) {
+        <polygon class="scan__web-line" [attr.points]="ring" />
+      }
+      @for (spoke of spokes; track $index) {
+        <line class="scan__web-line" x1="100" y1="100" [attr.x2]="spoke.x" [attr.y2]="spoke.y" />
+      }
+
+      @for (blip of blips(); track blip.n) {
+        <g class="scan__blip" [class.is-lead]="blip.lead">
+          <circle class="scan__blip-ping" [attr.cx]="blip.x" [attr.cy]="blip.y" r="4" />
+          <circle class="scan__blip-dot" [attr.cx]="blip.x" [attr.cy]="blip.y" r="3" />
+        </g>
+      }
+
+      <circle class="scan__track" cx="100" cy="100" [attr.r]="ringRadius" />
+      <g class="scan__ring-wrap">
+        <circle
+          class="scan__ring"
+          cx="100"
+          cy="100"
+          [attr.r]="ringRadius"
+          [attr.stroke-dasharray]="ringLength"
+          [attr.stroke-dashoffset]="ringOffset()"
+          transform="rotate(-90 100 100)"
+        />
+      </g>
+    </svg>
+
+    <div class="scan__center">
+      @switch (phase()) {
+        @case ('discover') {
+          <lucide-icon class="scan__pin" [img]="MapPin" [size]="30" />
+          <span class="scan__caption">Mapping area</span>
+        }
+        @case ('check') {
+          <span class="scan__count heading">{{ progress()?.checked }}</span>
+          <span class="scan__caption">of {{ progress()?.total }} sites</span>
+        }
+        @case ('finish') {
+          <span class="scan__done">
+            <lucide-icon [img]="Check" [size]="28" />
+          </span>
+          <span class="scan__caption">{{ progress()?.leads ?? 0 }} leads</span>
+        }
+      }
+    </div>
+  </div>
+
+  <ol class="scan__steps">
+    @for (step of steps(); track step.label) {
+      <li class="scan__step is-{{ step.state }}">
+        <span class="scan__marker">
+          @if (step.state === 'done') {
+            <lucide-icon [img]="Check" [size]="13" />
+          }
+        </span>
+        <span class="scan__step-label">{{ step.label }}</span>
+        @if (step.state !== 'pending' && step.detail) {
+          <span class="scan__step-detail">{{ step.detail }}</span>
+        }
+      </li>
+    }
+  </ol>
+
+  @if (progress()?.recent?.length && phase() === 'check') {
+    <ul class="scan__feed" aria-hidden="true">
+      @for (site of progress()!.recent; track site.n) {
+        <li class="scan__feed-item" [class.is-lead]="site.lead">
+          <span class="scan__feed-dot"></span>
+          <span class="scan__feed-name">{{ site.name }}</span>
+          <span class="scan__feed-tag">{{ site.lead ? 'Lead' : 'OK' }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  <p class="scan__lock">
+    <lucide-icon [img]="Lock" [size]="13" />
+    Search is locked while scanning
+  </p>
+</div>
