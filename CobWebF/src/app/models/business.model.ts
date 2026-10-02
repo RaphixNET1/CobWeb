@@ -12,7 +12,18 @@ export type IssueCode =
   | 'oldJquery'
   | 'oldCms'
   | 'siteBuilder'
-  | 'slow';
+  | 'slow'
+  | 'fixedWidth'
+  | 'staleContent'
+  | 'ieHacks'
+  | 'oldBootstrap'
+  | 'oldServer'
+  | 'oldTracking'
+  | 'mixedContent'
+  | 'http1'
+  | 'noSecurityHeaders'
+  | 'unoptimizedImages'
+  | 'noMetaDescription';
 
 export interface WebsiteIssue {
   code: IssueCode;
@@ -48,6 +59,7 @@ export interface Business {
   // 0-100, higher = better lead.
   score: number;
   issues: WebsiteIssue[];
+  checks?: IssueCode[];
 }
 
 export type SearchStatus = 'idle' | 'loading' | 'done' | 'error';
@@ -98,14 +110,33 @@ const ISSUE_LABELS: Record<IssueCode, string> = {
   oldCms: 'Old CMS',
   siteBuilder: 'Site builder',
   slow: 'Slow',
+  fixedWidth: 'Fixed width',
+  staleContent: 'Stale content',
+  ieHacks: 'IE hacks',
+  oldBootstrap: 'Old Bootstrap',
+  oldServer: 'Old server',
+  oldTracking: 'Dead analytics',
+  mixedContent: 'Mixed content',
+  http1: 'HTTP/1.1',
+  noSecurityHeaders: 'No security headers',
+  unoptimizedImages: 'Heavy images',
+  noMetaDescription: 'No meta description',
 };
+
+export function issueName(code: IssueCode): string {
+  return ISSUE_LABELS[code];
+}
 
 export function issueLabel(issue: WebsiteIssue): string {
   switch (issue.code) {
     case 'oldCopyright':
       return issue.detail ? `© ${issue.detail}` : ISSUE_LABELS.oldCopyright;
+    case 'staleContent':
+      return issue.detail ? `Last date ${issue.detail}` : ISSUE_LABELS.staleContent;
     case 'oldCms':
     case 'oldJquery':
+    case 'oldBootstrap':
+    case 'oldServer':
     case 'siteBuilder':
       return issue.detail ?? ISSUE_LABELS[issue.code];
     default:

@@ -1,0 +1,85 @@
+<p class="findings__reason">{{ statusReason() }}</p>
+
+@if (lead().status === 'outdated' && segments().length) {
+  <div class="findings__score">
+    <div class="findings__stack" role="img" [attr.aria-label]="'Score composition: ' + formula() + ' = ' + total()">
+      @for (segment of segments(); track segment.code) {
+        <span
+          class="findings__segment findings__segment--{{ segment.severity }}"
+          [style.width.%]="segment.width"
+          [title]="segment.label + ' +' + segment.points"
+        ></span>
+      }
+      <span class="findings__threshold" [style.left.%]="thresholdPosition()" title="Lead threshold"></span>
+    </div>
+
+    <div class="findings__legend">
+      <span>0</span>
+      <span class="findings__legend-threshold" [style.left.%]="thresholdPosition()">lead at {{ minLeadPoints }}</span>
+      <span>100</span>
+    </div>
+
+    <p class="findings__formula">
+      <span class="findings__formula-sum">{{ formula() }}</span>
+      <span>= {{ total() }} points</span>
+      @if (total() > 100) {
+        <span>→ capped at</span>
+      } @else {
+        <span>→</span>
+      }
+      <strong>score {{ lead().score }}</strong>
+    </p>
+  </div>
+
+  @for (group of groups(); track group.id) {
+    <section class="findings__group">
+      <h4 class="findings__group-title">
+        <lucide-icon [img]="group.icon" [size]="15" />
+        {{ group.label }}
+        <span class="findings__group-points">+{{ group.points }}</span>
+      </h4>
+
+      <ul class="findings__list">
+        @for (issue of group.issues; track issue.code) {
+          <li class="findings__item findings__item--{{ issue.severity }}">
+            <div class="findings__item-head">
+              <span class="findings__item-label">{{ issue.name }}</span>
+              <span class="findings__severity">{{ issue.severityLabel }}</span>
+              <span class="findings__points">+{{ issue.points }}</span>
+            </div>
+            <p class="findings__item-reason">{{ issue.reason }}</p>
+            @if (issue.detail) {
+              <span class="findings__evidence">Detected: {{ issue.detail }}</span>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+}
+
+@if (passed(); as passed) {
+  @if (passed.length) {
+    <section class="findings__group">
+      <h4 class="findings__group-title">
+        <lucide-icon [img]="CircleCheck" [size]="15" />
+        Passed checks
+        <span class="findings__group-points findings__group-points--ok">{{ passed.length }}</span>
+      </h4>
+      <ul class="findings__chips">
+        @for (label of passed; track label) {
+          <li>{{ label }}</li>
+        }
+      </ul>
+    </section>
+  }
+}
+
+@if (lead().status === 'outdated') {
+  <p class="findings__rules">
+    <strong>How the score works:</strong>
+    every finding adds points by severity – low 5, medium 10, high 15–20, critical 25+.
+    The sum is capped at 100. A website only becomes a lead with at least {{ minLeadPoints }} points
+    and at least one finding worth {{ minMajorPoints }}+, so a few minor issues alone never qualify.
+  </p>
+}

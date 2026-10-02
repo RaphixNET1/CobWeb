@@ -45,43 +45,7 @@
     <div class="detail__grid">
       <section class="detail__card detail__findings">
         <h3 class="detail__section-title heading">why this lead</h3>
-        <p class="detail__reason">{{ statusReason() }}</p>
-
-        @if (lead.issues.length) {
-          <ul class="detail__issues">
-            @for (issue of lead.issues; track issue.code) {
-              <li class="detail__issue">
-                <div class="detail__issue-head">
-                  <lucide-icon class="detail__issue-icon" [img]="TriangleAlert" [size]="16" />
-                  <span class="detail__issue-label">{{ issueLabel(issue) }}</span>
-                  <span class="detail__issue-points">+{{ issue.points }}</span>
-                </div>
-                <div class="detail__bar">
-                  <span [style.width.%]="issueShare(issue)"></span>
-                </div>
-                <p class="detail__issue-reason">{{ issueReason(issue) }}</p>
-                @if (issue.detail) {
-                  <span class="detail__issue-detail">Detected: {{ issue.detail }}</span>
-                }
-              </li>
-            }
-          </ul>
-
-          <div class="detail__total">
-            <span>Lead score</span>
-            <span class="detail__total-value">
-              @if (pointsTotal() > 100) {
-                <span class="detail__total-raw">{{ pointsTotal() }} pts, capped at</span>
-              }
-              {{ lead.score }} / 100
-            </span>
-          </div>
-        } @else if (lead.status === 'outdated') {
-          <p class="detail__empty">
-            <lucide-icon [img]="CircleCheck" [size]="18" />
-            No detailed findings stored for this lead.
-          </p>
-        }
+        <app-lead-findings [lead]="lead" />
       </section>
 
       <aside class="detail__card detail__contact">
