@@ -188,3 +188,14 @@ app-map-view {
     animation: none;
   }
 }
+
+/* CWC */
+.map-pin--business .map-pin__dot {
+  animation: pin-drop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: var(--drop-delay, 0ms);
+}
+
+/* CWC */
+@keyframes pin-drop {
+  from { opacity: 0; transform: translateY(-18px) scale(0.4); }
+}

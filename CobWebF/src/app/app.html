@@ -30,9 +30,14 @@
     <a routerLink="/about" routerLinkActive="active">
       <lucide-icon [img]="User" [size]="20" /> About me
     </a>
+
+    <!-- CWC -->
+    <app-spider />
   </nav>
 
   <main class="page">
+    <!-- CWC -->
+    <app-cobweb class="page__web" />
     <router-outlet />
   </main>
 </div>

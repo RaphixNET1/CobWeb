@@ -83,8 +83,10 @@
 
         <ul class="results__list">
           @for (business of visible(); track business.id) {
+            <!-- CWC -->
             <li
               class="results__item"
+              [style.--i]="$index"
               [class.is-active]="business.id === selectedId()"
               [attr.data-id]="business.id"
             >

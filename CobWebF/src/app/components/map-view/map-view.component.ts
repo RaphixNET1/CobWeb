@@ -221,7 +221,7 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
     // Keep popups clear of the filter (left) and results panel (right) - if the map is wide enough for that.
     const panelPad = (this.map?.getSize().x ?? 0) > 1000 ? 380 : 40;
 
-    for (const business of businesses) {
+    for (const [index, business] of businesses.entries()) {
       const marker = L.marker([business.lat, business.lon], { icon: LEAD_ICONS[business.status], title: business.name })
         .bindPopup(buildBusinessPopup(business), {
           autoPanPaddingTopLeft: [panelPad, 40],
@@ -229,6 +229,8 @@ export class MapViewComponent implements AfterViewInit, OnDestroy {
         })
         .on('click', () => this.businessSelected.emit(business))
         .addTo(this.businessLayer);
+      // CWC
+      marker.getElement()?.style.setProperty('--drop-delay', `${Math.min(index * 12, 700)}ms`);
       this.businessMarkers.set(business.id, marker);
     }
   }

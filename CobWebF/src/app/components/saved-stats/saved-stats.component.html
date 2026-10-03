@@ -1,0 +1,32 @@
+<!-- CWC -->
+<dl class="stats">
+  <div class="stats__stat stats__stat--main">
+    <dt>{{ priorityOnly() ? 'Priority leads' : 'Saved leads' }}</dt>
+    <dd class="heading" [style.--score-target]="stats().total">
+      <span class="cw-sr-only">{{ stats().total }}</span>
+    </dd>
+  </div>
+
+  <span class="stats__divider" aria-hidden="true"></span>
+
+  @for (stat of stats().breakdown; track stat.label) {
+    <div class="stats__stat">
+      <dt>
+        <span class="stats__stat-dot stats__stat-dot--{{ stat.status }}" aria-hidden="true"></span>
+        {{ stat.label }}
+      </dt>
+      <dd [style.--score-target]="stat.count">
+        <span class="cw-sr-only">{{ stat.count }}</span>
+      </dd>
+    </div>
+  }
+
+  <span class="stats__divider" aria-hidden="true"></span>
+
+  <div class="stats__stat">
+    <dt>Avg. score</dt>
+    <dd [style.--score-target]="stats().averageScore">
+      <span class="cw-sr-only">{{ stats().averageScore }}</span>
+    </dd>
+  </div>
+</dl>

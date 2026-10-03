@@ -5,10 +5,16 @@
   </a>
 
   @if (lead(); as lead) {
-    <section class="detail__card detail__hero" [class.is-priority]="isFavorite(lead)">
-      <span class="detail__score detail__score--{{ scoreLevel(lead.score) }}">
-        {{ lead.score }}
-        <small>/ 100</small>
+    <!-- CWC -->
+    <section class="detail__card detail__hero cw-web-corner" [class.is-priority]="isFavorite(lead)">
+      <span
+        class="detail__score detail__score--{{ scoreLevel(lead.score) }}"
+        role="img"
+        [attr.aria-label]="'Score ' + lead.score + ' of 100'"
+        [style.--score-target]="lead.score"
+      >
+        <span class="detail__score-value" aria-hidden="true"></span>
+        <small aria-hidden="true">/ 100</small>
       </span>
 
       <div class="detail__title">

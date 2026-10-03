@@ -42,43 +42,93 @@
   }
 }
 
+/* CWC */
 .detail__score {
+  --score: var(--score-target);
+  --ring-from: var(--muted);
+  --ring-to: var(--muted);
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
-  font-size: 1.6rem;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: conic-gradient(var(--ring-from) 0%, var(--ring-to) calc(var(--score) * 1%), var(--border) 0);
+  color: var(--muted);
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  animation: detail-score 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s backwards;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: var(--surface);
+  }
+
+  > * {
+    position: relative;
+  }
 
   small {
-    margin-top: 4px;
-    font-size: 0.65rem;
+    margin-top: 3px;
+    font-size: 0.6rem;
     font-weight: 600;
     opacity: 0.75;
   }
 }
 
+/* CWC */
+.detail__score-value::after {
+  counter-reset: score var(--score);
+  content: counter(score);
+}
+
+/* CWC */
 .detail__score--hot {
-  background: linear-gradient(135deg, #7a0c1c, var(--accent));
-  color: #fff;
-}
-
-.detail__score--warm {
-  background: var(--active-bg);
+  --ring-from: #7a0c1c;
+  --ring-to: #ff4d4d;
   color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--input-border);
 }
 
-.detail__score--mild {
-  background: var(--bg);
-  color: var(--muted);
-  box-shadow: inset 0 0 0 1px var(--border);
+/* CWC */
+.detail__score--warm {
+  --ring-from: var(--accent);
+  --ring-to: #ff4d4d;
+  color: var(--accent);
+}
+
+/* CWC */
+.detail__hero {
+  --web-size: 150px;
+  --web-opacity: 0.14;
+  animation: detail-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* CWC */
+.detail__grid > * {
+  animation: detail-rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* CWC */
+.detail__grid > :nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+/* CWC */
+@keyframes detail-score {
+  from { --score: 0; }
+}
+
+/* CWC */
+@keyframes detail-rise {
+  from { opacity: 0; transform: translateY(14px); }
 }
 
 .detail__title {

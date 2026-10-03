@@ -6,9 +6,11 @@ import { filter, map } from 'rxjs';
 import { LucideAngularModule, Map as MapIcon, Bookmark, User } from 'lucide-angular';
 import {ModeSetting} from './components/mode-setting/mode-setting';
 import { HealthService } from './services/health.service';
+import { SpiderComponent } from './components/spider/spider.component';
+import { CobwebComponent } from './components/cobweb/cobweb.component';
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule, NgOptimizedImage, ModeSetting],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule, NgOptimizedImage, ModeSetting, SpiderComponent, CobwebComponent],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

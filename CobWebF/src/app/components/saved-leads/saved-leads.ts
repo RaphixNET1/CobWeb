@@ -16,9 +16,11 @@ import {
 
 import { SavedLead } from '../../models/savedLead.model';
 import { SaveleadService } from '../../services/savelead.service';
+import { CobwebComponent } from '../cobweb/cobweb.component';
+import { SavedStatsComponent } from '../saved-stats/saved-stats.component';
 
 @Component({
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, CobwebComponent, SavedStatsComponent],
   selector: 'app-saved-leads',
   styleUrl: './saved-leads.css',
   templateUrl: './saved-leads.html',

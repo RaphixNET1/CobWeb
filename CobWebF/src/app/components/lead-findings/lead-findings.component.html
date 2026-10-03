@@ -4,8 +4,10 @@
   <div class="findings__score">
     <div class="findings__stack" role="img" [attr.aria-label]="'Score composition: ' + formula() + ' = ' + total()">
       @for (segment of segments(); track segment.code) {
+        <!-- CWC -->
         <span
           class="findings__segment findings__segment--{{ segment.severity }}"
+          [style.--i]="$index"
           [style.width.%]="segment.width"
           [title]="segment.label + ' +' + segment.points"
         ></span>
@@ -41,7 +43,8 @@
 
       <ul class="findings__list">
         @for (issue of group.issues; track issue.code) {
-          <li class="findings__item findings__item--{{ issue.severity }}">
+          <!-- CWC -->
+          <li class="findings__item findings__item--{{ issue.severity }}" [style.--i]="$index">
             <div class="findings__item-head">
               <span class="findings__item-label">{{ issue.name }}</span>
               <span class="findings__severity">{{ issue.severityLabel }}</span>
@@ -68,7 +71,8 @@
       </h4>
       <ul class="findings__chips">
         @for (label of passed; track label) {
-          <li>{{ label }}</li>
+          <!-- CWC -->
+          <li [style.--i]="$index">{{ label }}</li>
         }
       </ul>
     </section>

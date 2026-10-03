@@ -425,3 +425,24 @@
     animation: none;
   }
 }
+
+/* CWC */
+.results__item {
+  animation: results-item-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(min(var(--i, 0), 14) * 35ms);
+}
+
+/* CWC */
+.results__save.is-saved lucide-icon {
+  animation: results-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* CWC */
+@keyframes results-item-in {
+  from { opacity: 0; transform: translateX(12px); }
+}
+
+/* CWC */
+@keyframes results-pop {
+  40% { transform: scale(1.4) rotate(-8deg); }
+}

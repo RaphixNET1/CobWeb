@@ -1,0 +1,17 @@
+<!-- CWC -->
+<div class="spider">
+  <span class="spider__thread"></span>
+  <svg class="spider__body" viewBox="0 0 40 38">
+    <g class="spider__legs">
+      @for (leg of legs; track $index) {
+        <path [attr.d]="leg" [class.is-left]="$index < 4" />
+      }
+    </g>
+    <ellipse class="spider__abdomen" cx="20" cy="25" rx="6" ry="7.5" />
+    <circle class="spider__head" cx="20" cy="15" r="4" />
+    <g class="spider__eyes">
+      <circle cx="18.4" cy="14.2" r="1" />
+      <circle cx="21.6" cy="14.2" r="1" />
+    </g>
+  </svg>
+</div>
